@@ -7,7 +7,7 @@
     <title>Schemes - Gram Panchayat</title>
     <!-- ✅ Favicon added -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
-    
+
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
@@ -19,8 +19,127 @@
             display: inline-block;
             margin-left: 4px;
         }
+
+        /* -------------------- GOVERNMENT STYLE BACKGROUND -------------------- */
+        body {
+            background-color: #eef2f5;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        /* -------------------- HEADER (Government Tricolor Look) -------------------- */
+        .site-header {
+            background: linear-gradient(to right, #FF9933, #ffffff, #138808);
+            padding: 12px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .site-header .brand {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            text-shadow: 0 0 4px #fff;
+        }
+
+        /* -------------------- NAVIGATION -------------------- */
+        .nav a {
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 10px 14px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .nav a:hover {
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+        }
+
+        .nav a.active {
+            background: #0C4A85;
+            color: white !important;
+            border-radius: 6px;
+            padding: 10px 16px;
+        }
+
+        /* -------------------- PAGE TITLE -------------------- */
+        main.container h1 {
+            text-align: center;
+            background: #0C4A85;
+            padding: 12px;
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        /* -------------------- SEARCH BOX -------------------- */
+        .search-box {
+            width: 100%;
+            max-width: 350px;
+            padding: 12px;
+            margin: 0 auto 20px auto;
+            display: block;
+            border-radius: 8px;
+            border: 1px solid #b2c0ce;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: #0C4A85;
+            box-shadow: 0 0 6px #0C4A85;
+        }
+
+        /* -------------------- CARD LIST -------------------- */
+        .cards .card {
+            background: white;
+            border: 1px solid #cfd7df;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #0C4A85;
+        }
+
+        .cards .card h3 {
+            margin: 0;
+            color: #08345c;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .cards .card p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        /* -------------------- FOOTER -------------------- */
+        .site-footer {
+            background: #0C4A85;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 15px;
+        }
+
+        /* Left Corner Logo (schemes.png) */
+        .site-header::before {
+            content: "";
+            background: url("assets/img/schemes.png") no-repeat center;
+            background-size: 80px;
+            /* increased size */
+            position: absolute;
+            left: 20px;
+            top: 5px;
+            width: 80px;
+            /* box size updated */
+            height: 80px;
+            opacity: 0.95;
+        }
     </style>
 </head>
+
+
 
 <body>
     <header class="site-header">
@@ -139,4 +258,5 @@
     </script>
 
 </body>
+
 </html>

@@ -5,11 +5,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Admin Login</title>
-    <!-- ✅ Favicon added -->
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
     <style>
-        /* 🌄 FULL PAGE BACKGROUND IMAGE */
+        /* ============================
+            🇮🇳 GOVERNMENT LOGIN THEME
+        ============================ */
+
+        /* Tricolor Strip Top */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, #FF9933, white, #138808);
+            z-index: 9999;
+        }
+
+        /* Background */
         body {
             margin: 0;
             padding: 0;
@@ -23,7 +40,6 @@
             position: relative;
         }
 
-        /* 🌑 DARK OVERLAY */
         .bg-overlay {
             position: absolute;
             top: 0;
@@ -34,20 +50,34 @@
             z-index: 0;
         }
 
-        /* Glassmorphism Box */
+        /* Login Box */
         .login-box {
             width: 350px;
             padding: 30px;
             border-radius: 20px;
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.20);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             text-align: center;
             color: white;
             animation: fadeIn 0.8s ease-in-out;
             position: relative;
             z-index: 2;
+            border-top: 5px solid #0C4A85;
+        }
+
+        /* Government Emblem */
+        .login-box::before {
+            content: "";
+            background: url("assets/img/india-emblem.png") no-repeat center;
+            background-size: 85px;
+            position: absolute;
+            top: -95px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 100px;
+            opacity: 1;
         }
 
         @keyframes fadeIn {
@@ -55,37 +85,36 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ✨ HEADING GLOW EFFECT */
+        /* Heading */
         .login-box h2 {
             font-size: 26px;
             margin-bottom: 5px;
-            font-weight: 600;
-            color: #fff;
-            text-shadow: 0 0 10px #ffffff, 0 0 25px #00eaff;
-            animation: glowHeading 2s infinite alternate;
-        }
-
-        @keyframes glowHeading {
-            from { text-shadow: 0 0 10px #fff, 0 0 25px #00eaff; }
-            to { text-shadow: 0 0 20px #fff, 0 0 40px #00f6ff; }
+            font-weight: 700;
+            color: #08345c !important;
+            text-shadow: none !important;
         }
 
         .login-box p {
             margin-bottom: 20px;
-            opacity: 0.9;
+            opacity: 1;
+            color: #111;
+            font-weight: 500;
         }
 
+        /* Inputs */
         .login-box input {
             width: 100%;
             padding: 12px;
             margin: 10px 0 20px 0;
-            border: none;
+            border: 1px solid #ddd;
+            background: white;
             border-radius: 10px;
             outline: none;
             font-size: 15px;
-            font-family: inherit;
+            color: #222;
         }
 
+        /* Button */
         .login-box button {
             width: 100%;
             padding: 12px;
@@ -93,41 +122,46 @@
             border-radius: 10px;
             border: none;
             cursor: pointer;
-            background: #ffcc00;
+            background: #0C4A85;
+            color: white;
             font-weight: 600;
             transition: 0.25s ease;
         }
 
         .login-box button:hover {
-            background: #ffd633;
+            background: #062f57;
             transform: scale(1.03);
         }
 
+        /* Error */
         .error {
             margin-top: 10px;
-            color: #ffdddd;
+            color: #ff4444 !important;
             font-size: 14px;
             display: none;
+            font-weight: 600;
         }
 
+        /* Admin Badge */
         .admin-badge {
-            background: #ffd700;
+            background: #0C4A85;
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 13px;
             display: inline-block;
             margin-bottom: 10px;
-            color: #222;
+            color: #fff;
             font-weight: 600;
+            border-left: 4px solid #052f5f;
         }
 
-        /* SUCCESS POPUP */
+        /* Success Popup */
         .popup {
             position: fixed;
             top: -60px;
             left: 50%;
             transform: translateX(-50%);
-            background: #4cd964;
+            background: #2ca24c;
             padding: 12px 25px;
             border-radius: 6px;
             color: #fff;
@@ -135,6 +169,7 @@
             opacity: 0;
             transition: all .4s ease;
             z-index: 9999;
+            font-weight: 600;
         }
 
         .popup.show {
@@ -146,24 +181,23 @@
 
 <body>
 
-    <!-- DARK OVERLAY -->
     <div class="bg-overlay"></div>
 
     <!-- SUCCESS POPUP -->
     <div id="loginSuccessPopup" class="popup">
-        Login Successful! ✔️
+        ✔️ Login Successful
     </div>
 
     <div class="login-box">
-        <div class="admin-badge">ADMIN ACCESS ONLY</div>
+        <div class="admin-badge">🇮🇳 अधिकृत प्रशासक प्रवेश</div>
 
-        <h2>Welcome Admin</h2>
-        <p>कृपया लॉगिन करण्यासाठी पासवर्ड टाका</p>
+        <h2>प्रशासनिक लॉगिन</h2>
+        <p>⚠️ हे पोर्टल अधिकृत सरकारी वापरकर्त्यांसाठी मर्यादित आहे</p>
 
-        <input type="password" id="adminPass" placeholder="Enter Admin Password">
-        <button onclick="loginAdmin()">Login</button>
+        <input type="password" id="adminPass" placeholder="अधिकृत पासवर्ड टाका">
+        <button onclick="loginAdmin()">लॉगिन करा</button>
 
-        <p id="errorMsg" class="error">Incorrect Password!</p>
+        <p id="errorMsg" class="error">❌ चुकीचा पासवर्ड!</p>
     </div>
 
     <script>
@@ -180,7 +214,6 @@
             const errorBox = document.getElementById("errorMsg");
 
             if (pass === CORRECT_PASSWORD) {
-
                 showLoginSuccessPopup();
                 localStorage.setItem("isAdminLoggedIn", "true");
 

@@ -7,7 +7,7 @@
     <title>Gallery - Gram Panchayat</title>
     <!-- ✅ Favicon added -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
-    
+
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
@@ -62,6 +62,136 @@
             cursor: pointer !important;
             pointer-events: auto !important;
             z-index: 10;
+        }
+
+        /* -------------------- GOVERNMENT BACKGROUND -------------------- */
+        body {
+            background-color: #eef2f5;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        /* -------------------- HEADER (Tiranga + Govt Look) -------------------- */
+        .site-header {
+            background: linear-gradient(to right, #FF9933, #ffffff, #138808);
+            padding: 12px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .site-header .brand {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            text-shadow: 0 0 4px #fff;
+        }
+
+        /* -------------------- NAVIGATION -------------------- */
+        .nav a {
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 10px 14px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .nav a:hover {
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+        }
+
+        .nav a.active {
+            background: #0C4A85;
+            color: white !important;
+            border-radius: 6px;
+        }
+
+        /* -------------------- PAGE TITLE -------------------- */
+        main.container h1 {
+            text-align: center;
+            background: #0C4A85;
+            padding: 12px;
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+            margin-bottom: 10px;
+        }
+
+        /* -------------------- DESCRIPTION TEXT -------------------- */
+        main.container p {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            border-left: 5px solid #0C4A85;
+            max-width: 650px;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* -------------------- GALLERY GRID (GOVERNMENT STYLE) -------------------- */
+        .gallery-grid img {
+            width: 100%;
+            max-width: 240px;
+            border-radius: 10px;
+            border: 3px solid #0C4A85;
+            /* GOVT BLUE BORDER */
+            margin: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        /* -------------------- LIGHTBOX GOVERNMENT THEME -------------------- */
+        .lightbox {
+            background: rgba(0, 0, 40, 0.88);
+            /* DARK GOVT BLUE */
+        }
+
+        .lightbox img {
+            border: 5px solid white;
+            border-radius: 12px;
+            box-shadow: 0 4px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Close button style */
+        .close-btn {
+            background: rgba(12, 74, 133, 0.8);
+            /* #0C4A85 Govt Blue */
+            border-radius: 8px;
+        }
+
+        .close-btn:hover {
+            background: rgba(12, 74, 133, 1);
+        }
+
+        /* -------------------- FOOTER -------------------- */
+        .site-footer {
+            background: #0C4A85;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 15px;
+        }
+
+         /* Left Corner Logo (gallery.png) */
+        .site-header::before {
+            content: "";
+            background: url("assets/img/digital.png") no-repeat center;
+            background-size: 80px;
+            /* increased size */
+            position: absolute;
+            left: 20px;
+            top: 5px;
+            width: 80px;
+            /* box size updated */
+            height: 80px;
+            opacity: 0.95;
         }
     </style>
 </head>

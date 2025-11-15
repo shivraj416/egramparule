@@ -7,7 +7,7 @@
     <title>Gram Panchayat - Home</title>
     <!-- ✅ Favicon added -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
-    
+
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
@@ -71,6 +71,124 @@
             to {
                 text-shadow: 0 0 12px #fff, 0 0 20px #00eaff;
             }
+        }
+
+        /* ==========================================================
+   🇮🇳 GOVERNMENT OF INDIA THEME FOR HOME PAGE
+   ========================================================== */
+
+        /* ---------------------- GOV HEADER (Tricolor) ---------------------- */
+        .site-header {
+            background: linear-gradient(to right, #FF9933, white, #138808);
+            padding: 12px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .site-header .brand {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50 !important;
+            text-shadow: 0 0 4px #fff;
+        }
+
+        /* Nav Links */
+        .nav a {
+            color: #2c3e50 !important;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .nav a:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .nav a.active {
+            background: #0C4A85;
+            color: white !important;
+            text-shadow: none;
+        }
+
+        /* ---------------------- PAGE SUBTITLE STYLING ---------------------- */
+        .map h3 {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px 12px;
+            border-radius: 6px;
+            width: fit-content;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ---------------------- NOTICES BOX (Gov Style) ---------------------- */
+        .info-list h2 {
+            background: #0C4A85;
+            padding: 10px;
+            color: white !important;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Search Box */
+        .search-box {
+            width: 100%;
+            max-width: 350px;
+            display: block;
+            margin: 15px auto;
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #d1d9e0;
+        }
+
+        .search-box:focus {
+            border-color: #0C4A85;
+            box-shadow: 0 0 6px #0C4A85;
+        }
+
+        /* NOTICE CARDS (Govt White Card Style) */
+        .cards .card {
+            background: white;
+            padding: 15px;
+            border: 1px solid #cfd7df;
+            margin-bottom: 15px;
+            border-left: 5px solid #0C4A85;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cards .card h3 {
+            margin: 0;
+            color: #08345c;
+        }
+
+        .cards .card p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        /* ---------------------- FOOTER ---------------------- */
+        .site-footer {
+            background: #0C4A85 !important;
+            color: #fff !important;
+            padding: 15px;
+            font-size: 15px;
+            margin-top: 40px;
+            border-top: 5px solid #08345c;
+        }
+
+         /* Left Corner Logo (schemes.png) */
+        .site-header::before {
+            content: "";
+            background: url("assets/img/amrit.png") no-repeat center;
+            background-size: 80px;
+            /* increased size */
+            position: absolute;
+            left: 20px;
+            top: 5px;
+            width: 80px;
+            /* box size updated */
+            height: 80px;
+            opacity: 0.95;
         }
     </style>
 </head>
@@ -152,77 +270,65 @@
     </footer>
 
     <!-- REAL-TIME DATA HANDLING -->
-<script src="/socket.io/socket.io.js"></script>
-<script>
-    const socket = io();
-    const infoContainer = document.getElementById('infoItems');
-    const searchInput = document.getElementById('noticeSearch');
-    const dotHome = document.getElementById('dotHome');
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const infoContainer = document.getElementById('infoItems');
+        const searchInput = document.getElementById('noticeSearch');
+        const dotHome = document.getElementById('dotHome');
 
-    let allNotices = [];
+        let allNotices = [];
 
-    function showHomeDot() {
-        if (localStorage.getItem("newInfo") === "yes") {
-            dotHome.style.display = "inline-block";
+        function showHomeDot() {
+            if (localStorage.getItem("newInfo") === "yes") {
+                dotHome.style.display = "inline-block";
+            }
         }
-    }
-    showHomeDot();
+        showHomeDot();
 
-    socket.on("new-data", (data) => {
-        if (data.type === "info") {
-            localStorage.setItem("newInfo", "yes");
-            showHomeDot();
-        }
-    });
+        socket.on("new-data", (data) => {
+            if (data.type === "info") {
+                localStorage.setItem("newInfo", "yes");
+                showHomeDot();
+            }
+        });
 
-    window.addEventListener("load", () => {
-        localStorage.setItem("newInfo", "no");
-        dotHome.style.display = "none";
-    });
+        window.addEventListener("load", () => {
+            localStorage.setItem("newInfo", "no");
+            dotHome.style.display = "none";
+        });
 
-    /* ---------------------------------------------
-       RENDER INFO WITH COLOR BADGES (FIXED)
-    ----------------------------------------------*/
-    function renderInfo(items) {
-        infoContainer.innerHTML = '';
-        if (!Array.isArray(items)) return;
+        /* ---------------------------------------------
+           RENDER INFO WITH COLOR BADGES (FIXED)
+        ----------------------------------------------*/
+        function renderInfo(items) {
+            infoContainer.innerHTML = '';
+            if (!Array.isArray(items)) return;
 
-        items.forEach(item => {
-            const noticeType = item.type || "General";
+            items.forEach(item => {
+                const noticeType = item.type || "General";
 
-            // ⭐ Color selection
-            let tagClass = "tag-general";     // blue
-            if (noticeType === "Important") tagClass = "tag-important"; // red
-            if (noticeType === "Urgent") tagClass = "tag-urgent";       // orange
+                // ⭐ Color selection
+                let tagClass = "tag-general";     // blue
+                if (noticeType === "Important") tagClass = "tag-important"; // red
+                if (noticeType === "Urgent") tagClass = "tag-urgent";       // orange
 
-            const card = document.createElement('div');
-            card.className = 'card info-card';
+                const card = document.createElement('div');
+                card.className = 'card info-card';
 
-            card.innerHTML = `
+                card.innerHTML = `
                 <span class="notice-tag ${tagClass}">${noticeType}</span>
                 <h3>${item.title}</h3>
                 <p>${item.description || item.desc || ""}</p>
             `;
 
-            infoContainer.appendChild(card);
-        });
-    }
+                infoContainer.appendChild(card);
+            });
+        }
 
-    /* ---------------------------------------------
-       FETCH INITIAL DATA
-    ----------------------------------------------*/
-    fetch('/api/info')
-        .then(res => res.json())
-        .then(data => {
-            data.info.sort((a, b) => b.id - a.id);
-            allNotices = data.info;
-            renderInfo(allNotices);
-        });
-
-    /* ---------------------------------------------
-       LIVE UPDATE ON SOCKET EVENT
-    ----------------------------------------------*/
-    socket.on('new-data', () => {
+        /* ---------------------------------------------
+           FETCH INITIAL DATA
+        ----------------------------------------------*/
         fetch('/api/info')
             .then(res => res.json())
             .then(data => {
@@ -230,29 +336,42 @@
                 allNotices = data.info;
                 renderInfo(allNotices);
             });
-    });
 
-    /* ---------------------------------------------
-        SEARCH FILTER
-    ----------------------------------------------*/
-    searchInput.addEventListener("keyup", () => {
-        const q = searchInput.value.toLowerCase();
-        const filtered = allNotices.filter(n =>
-            n.title.toLowerCase().includes(q) ||
-            (n.description || n.desc || "").toLowerCase().includes(q) ||
-            (n.type || "General").toLowerCase().includes(q)
-        );
-        renderInfo(filtered);
-    });
+        /* ---------------------------------------------
+           LIVE UPDATE ON SOCKET EVENT
+        ----------------------------------------------*/
+        socket.on('new-data', () => {
+            fetch('/api/info')
+                .then(res => res.json())
+                .then(data => {
+                    data.info.sort((a, b) => b.id - a.id);
+                    allNotices = data.info;
+                    renderInfo(allNotices);
+                });
+        });
 
-    const currentPage = location.pathname.split("/").pop();
+        /* ---------------------------------------------
+            SEARCH FILTER
+        ----------------------------------------------*/
+        searchInput.addEventListener("keyup", () => {
+            const q = searchInput.value.toLowerCase();
+            const filtered = allNotices.filter(n =>
+                n.title.toLowerCase().includes(q) ||
+                (n.description || n.desc || "").toLowerCase().includes(q) ||
+                (n.type || "General").toLowerCase().includes(q)
+            );
+            renderInfo(filtered);
+        });
 
-    document.querySelectorAll("#mainNav a").forEach(link => {
-        if (link.getAttribute("href") === currentPage) {
-            link.classList.add("active");
-        }
-    });
-</script>
+        const currentPage = location.pathname.split("/").pop();
+
+        document.querySelectorAll("#mainNav a").forEach(link => {
+            if (link.getAttribute("href") === currentPage) {
+                link.classList.add("active");
+            }
+        });
+    </script>
 
 </body>
+
 </html>

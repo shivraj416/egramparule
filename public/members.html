@@ -20,6 +20,123 @@
             display: inline-block;
             margin-left: 4px;
         }
+
+        /* -------------------- GOVERNMENT STYLE BACKGROUND -------------------- */
+        body {
+            background: url("assets/img/gov-pattern.png") repeat;
+            background-color: #eef2f5;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
+        /* -------------------- HEADER (Tiranga look + Amrit Logo) -------------------- */
+        .site-header {
+            background: linear-gradient(to right, #FF9933, #ffffff, #138808);
+            padding: 10px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        /* Logo left or right */
+        .site-header::before {
+            content: "";
+            background: url('assets/img/govt.png') no-repeat center;
+            background-size: 90px;
+            position: absolute;
+            right: 25px;
+            top: 5px;
+            width: 90px;
+            height: 90px;
+            opacity: 0.98;
+        }
+
+        .site-header .brand {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            text-shadow: 0 0 4px #fff;
+        }
+
+        /* -------------------- NAVIGATION -------------------- */
+        .nav a {
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 10px 14px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .nav a:hover {
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+        }
+
+        .nav a.active {
+            background: #0C4A85;
+            color: white !important;
+            border-radius: 6px;
+        }
+
+        /* -------------------- PAGE TITLE -------------------- */
+        main.container h1 {
+            text-align: center;
+            background: #0C4A85;
+            padding: 12px;
+            color: #fff;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        /* -------------------- SEARCH BOX -------------------- */
+        .search-box {
+            width: 100%;
+            max-width: 350px;
+            padding: 12px;
+            margin: 0 auto 20px auto;
+            display: block;
+            border-radius: 8px;
+            border: 1px solid #b2c0ce;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: #0C4A85;
+            box-shadow: 0 0 6px #0C4A85;
+        }
+
+        /* -------------------- MEMBER CARDS -------------------- */
+        .member-card {
+            background: white;
+            border: 1px solid #cfd7df;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-left: 6px solid #0C4A85;
+        }
+
+        .member-card h3 {
+            margin: 0 0 8px 0;
+            color: #08345c;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .member-card p {
+            margin: 5px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        /* -------------------- FOOTER -------------------- */
+        .site-footer {
+            background: #0C4A85;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 15px;
+        }
     </style>
 </head>
 
@@ -149,4 +266,5 @@
 
     <script src="assets/js/script.js"></script>
 </body>
+
 </html>

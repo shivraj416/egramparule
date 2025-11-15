@@ -1,157 +1,190 @@
 <!DOCTYPE html>
 <html lang="mr">
+
 <head>
     <meta charset="UTF-8">
     <title>अर्ज (नमुना)</title>
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
-    
+
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap"
+        rel="stylesheet">
 
     <style>
+        /* -------------------- GOVERNMENT STYLE BACKGROUND -------------------- */
         body {
             margin: 0;
-            padding: 40px 10px;
+            padding: 30px 10px;
             font-family: 'Noto Sans Devanagari', sans-serif;
-            background: url("assets/img/bg2.jpg") no-repeat center center fixed;
-            background-size: cover;
+            background: url("assets/img/gov-pattern.png") repeat;
+            /* govt texture */
+            background-color: #f2f5f9;
+            /* light govt shade */
         }
 
-        /* Dark overlay */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.50);
-            backdrop-filter: blur(3px);
-            z-index: -1;
+        /* -------------------- GOV-STYLE TOP HEADER BAR -------------------- */
+        .gov-header {
+            text-align: center;
+            padding: 18px;
+            background: linear-gradient(to right, #FF9933, #ffffff, #138808);
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 700;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
         }
 
+        /* -------------------- PAGE TITLE -------------------- */
         h1 {
             text-align: center;
-            margin-bottom: 25px;
-            color: #fff;
-            font-size: 36px;
-            text-shadow: 0 0 12px #00eaff, 0 0 20px #00eaff;
-            animation: glowTitle 2s infinite alternate;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 34px;
+            font-weight: 700;
         }
 
-        @keyframes glowTitle {
-            from { text-shadow: 0 0 10px #00eaff; }
-            to { text-shadow: 0 0 20px #00eaff, 0 0 35px #00eaff; }
-        }
-
-        /* Glass Card */
+        /* -------------------- CARD (Official White Box) -------------------- */
         .card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            background: #ffffff;
             padding: 20px;
             margin: auto;
             max-width: 900px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            border: 1px solid #d5d5d5;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        thead {
-            background: rgba(0,0,0,0.4);
-        }
-
-        th, td {
-            padding: 12px 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-        }
-
-        tr:hover {
-            background: rgba(255,255,255,0.15);
-            transition: 0.2s;
-        }
-
-        .download-btn {
-            padding: 8px 14px;
-            background: #00c8ff;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: 600;
-            box-shadow: 0 0 8px #00c8ff;
-        }
-
-        .download-btn:hover {
-            background: #0096c7;
-            box-shadow: 0 0 12px #00eaff;
-        }
-
+        /* -------------------- SEARCH BOX -------------------- */
         .search-box {
-            max-width: 300px;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            max-width: 320px;
         }
 
         #searchInput {
             width: 100%;
             padding: 12px;
             font-size: 16px;
-            border-radius: 10px;
-            border: none;
+            border-radius: 8px;
+            border: 1px solid #bbb;
             outline: none;
-            background: rgba(255,255,255,0.8);
+        }
+
+        #searchInput:focus {
+            border-color: #0077cc;
+            box-shadow: 0 0 5px #0077cc;
+        }
+
+        /* -------------------- TABLE -------------------- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 17px;
+        }
+
+        thead {
+            background: #0C4A85;
+            /* govt blue */
+            color: white;
+        }
+
+        th,
+        td {
+            padding: 12px 10px;
+            border: 1px solid #dcdcdc;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fbff;
+        }
+
+        tr:hover {
+            background: #e8f3ff;
+        }
+
+        /* -------------------- DOWNLOAD BUTTON -------------------- */
+        .download-btn {
+            padding: 7px 12px;
+            background: #0C4A85;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid #08345c;
+        }
+
+        .download-btn:hover {
+            background: #052f5f;
         }
 
         @media(max-width: 600px) {
-            h1 { font-size: 28px; }
-            table { font-size: 15px; }
-            th, td { padding: 8px; }
+            h1 {
+                font-size: 26px;
+            }
+
+            .gov-header {
+                font-size: 22px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th,
+            td {
+                padding: 8px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="overlay"></div>
+    <!-- GOV INDIA TOP BAR WITH AMRIT MAHOTSAV LOGO -->
+    <div class="gov-header">
 
-<h1>अर्ज (नमुना)</h1>
+        <img src="assets/img/amrit.png" alt="Azadi Ka Amrit Mahotsav"
+            style="height:60px; vertical-align:middle; margin-right:10px;">
 
-<div class="card">
-
-    <!-- 🔍 Search Box -->
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="अर्ज शोधा...">
+        🔶 भारत सरकार प्रमाणित ग्रामपंचायत पोर्टल शैली 🔶
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>अनुक्रमांक</th>
-                <th>अर्जाचा विषय</th>
-                <th>डाउनलोड</th>
-            </tr>
-        </thead>
-        <tbody id="arjTable"></tbody>
-    </table>
+    <h1>अर्ज (नमुना)</h1>
 
-</div>
+    <div class="card">
 
-<script>
-async function loadArj() {
-    const res = await fetch("/api/arj");
-    const data = await res.json();
+        <!-- 🔍 Search Box -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="अर्ज शोधा...">
+        </div>
 
-    window.arjList = data.arj;
-    renderTable(data.arj);
-}
+        <table>
+            <thead>
+                <tr>
+                    <th>अनुक्रमांक</th>
+                    <th>अर्जाचा विषय</th>
+                    <th>डाउनलोड</th>
+                </tr>
+            </thead>
+            <tbody id="arjTable"></tbody>
+        </table>
 
-function renderTable(list) {
-    document.getElementById("arjTable").innerHTML =
-        list.length
-            ? list.map((a, i) => `
+    </div>
+
+    <script>
+        async function loadArj() {
+            const res = await fetch("/api/arj");
+            const data = await res.json();
+
+            window.arjList = data.arj;
+            renderTable(data.arj);
+        }
+
+        function renderTable(list) {
+            document.getElementById("arjTable").innerHTML =
+                list.length
+                    ? list.map((a, i) => `
                 <tr>
                     <td>${i + 1}</td>
                     <td>${a.title}</td>
@@ -162,19 +195,20 @@ function renderTable(list) {
                     </td>
                 </tr>
             `).join("")
-            : "<tr><td colspan='3' style='text-align:center;'>काहीही अर्ज उपलब्ध नाहीत</td></tr>";
-}
+                    : "<tr><td colspan='3' style='text-align:center;'>काहीही अर्ज उपलब्ध नाहीत</td></tr>";
+        }
 
-document.getElementById("searchInput").addEventListener("keyup", () => {
-    const q = document.getElementById("searchInput").value.toLowerCase();
-    const filtered = window.arjList.filter(a => 
-        a.title.toLowerCase().includes(q)
-    );
-    renderTable(filtered);
-});
+        document.getElementById("searchInput").addEventListener("keyup", () => {
+            const q = document.getElementById("searchInput").value.toLowerCase();
+            const filtered = window.arjList.filter(a =>
+                a.title.toLowerCase().includes(q)
+            );
+            renderTable(filtered);
+        });
 
-loadArj();
-</script>
+        loadArj();
+    </script>
 
 </body>
+
 </html>
