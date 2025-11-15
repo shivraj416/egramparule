@@ -295,7 +295,6 @@ ${message}
 // ⭐ CLOUDINARY SETUP (FOR RENDER + LOCALHOST)
 // =======================================================
 const cloudinary = require("cloudinary").v2;
-const multer = require("multer");
 
 // Load environment variables
 cloudinary.config({
