@@ -290,15 +290,22 @@ ${message}
         res.json({ success: false, error: err.message });
     }
 });
+
 // ------------------ ARJ (FORM) UPLOAD ------------------
+
+// 🔥 Render Fix — Ensure upload folder exists
+const ARJ_DIR = path.join(ROOT_DIR, "uploads/arj");
+fs.mkdirSync(ARJ_DIR, { recursive: true });
+
 const arjStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(ROOT_DIR, "uploads/arj")); // folder
+        cb(null, ARJ_DIR);  // FIXED for Render
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + "-" + file.originalname);
     }
 });
+
 const uploadArj = multer({ storage: arjStorage });
 
 app.get("/api/arj", (req, res) => {
@@ -327,6 +334,7 @@ app.post("/admin/arj", uploadArj.single("file"), (req, res) => {
 
     res.json({ success: true, file: newFile });
 });
+
 
 // ------------------ DELETE ARJ FILE ------------------
 app.delete("/admin/delete/arj/:id", (req, res) => {
