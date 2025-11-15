@@ -290,6 +290,75 @@ ${message}
         res.json({ success: false, error: err.message });
     }
 });
+// ------------------ ARJ (FORM) UPLOAD ------------------
+const arjStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(ROOT_DIR, "uploads/arj")); // folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "-" + file.originalname);
+    }
+});
+const uploadArj = multer({ storage: arjStorage });
+
+app.get("/api/arj", (req, res) => {
+    res.json({ arj: loadData().arj || [] });
+});
+
+// ------------------ UPLOAD ARJ ------------------
+app.post("/admin/arj", uploadArj.single("file"), (req, res) => {
+    const { title } = req.body;
+    if (!title || !req.file)
+        return res.json({ success: false, message: "Missing fields" });
+
+    const data = loadData();
+    const newFile = {
+        id: Date.now(),
+        title,
+        filename: req.file.filename,
+        url: `/uploads/arj/${req.file.filename}`
+    };
+
+    if (!data.arj) data.arj = [];
+    data.arj.push(newFile);
+    saveData(data);
+
+    io.emit("new-data", { type: "arj" });
+
+    res.json({ success: true, file: newFile });
+});
+
+// ------------------ DELETE ARJ FILE ------------------
+app.delete("/admin/delete/arj/:id", (req, res) => {
+    const id = req.params.id;
+
+    const data = loadData();
+    const item = data.arj.find(a => a.id == id);
+
+    if (!item) {
+        return res.status(404).json({ success: false, message: "ARJ not found" });
+    }
+
+    // DELETE the actual file
+    const filePath = path.join(ROOT_DIR, "uploads/arj", item.filename);
+    if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);   // remove file
+    }
+
+    // DELETE from database
+    data.arj = data.arj.filter(a => a.id != id);
+    saveData(data);
+
+    io.emit("new-data", { type: "arj" });
+
+    res.json({ success: true });
+});
+
+// ------------------ ARJ DOWNLOAD ------------------
+app.get("/download/arj/:filename", (req, res) => {
+    const filePath = path.join(ROOT_DIR, "uploads/arj", req.params.filename);
+    res.download(filePath);
+});
 
 
 // ----------------------------------------------------------

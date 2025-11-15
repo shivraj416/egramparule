@@ -179,6 +179,7 @@
                 <a href="index.html">
                     Home <span id="dotHome" class="new-dot" style="display:none;"></span>
                 </a>
+                <a href="arj.html">अर्ज (नमुना)</a>
                 <a href="about.html">
                     About <span id="dotAbout" class="new-dot" style="display:none;"></span>
                 </a>
@@ -272,17 +273,31 @@
 
         <h2>Existing Images</h2>
         <div id="adminGallery" class="gallery-grid"></div>
-    </main>
 
-    <section class="card">
-        <h2>Send Email to User</h2>
-        <form id="emailForm">
-            <input type="text" id="emailName" placeholder="User Name" required>
-            <input type="email" id="emailAddress" placeholder="User Email" required>
-            <textarea id="emailMessage" placeholder="Enter message..." required></textarea>
-            <button type="submit">Send Email</button>
-        </form>
-    </section>
+        <section class="card">
+            <h2>Add Arj (Application)</h2>
+            <form id="arjForm" enctype="multipart/form-data">
+                <input type="text" id="arjTitle" placeholder="अर्ज विषय" required />
+                <input type="file" id="arjFile" accept=".pdf,.doc,.docx,.jpg,.png" required />
+                <input type="password" id="arjPassword" placeholder="Admin Password" required />
+                <button type="submit">Upload Arj</button>
+            </form>
+        </section>
+
+        <h2>Existing Arj Files</h2>
+        <div id="adminArjList" class="cards"></div>
+
+        <section class="card">
+            <h2>Send Email to User</h2>
+            <form id="emailForm">
+                <input type="text" id="emailName" placeholder="User Name" required>
+                <input type="email" id="emailAddress" placeholder="User Email" required>
+                <textarea id="emailMessage" placeholder="Enter message..." required></textarea>
+                <button type="submit">Send Email</button>
+            </form>
+        </section>
+
+    </main>
 
     <footer class="site-footer">
         <div class="container"><small>✅ © ग्रामपंचायत परुळे</small></div>
@@ -290,6 +305,74 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        const socket = io();   /* ✅ FIXED — socket must be initialized first */
+
+        // Load Arj files
+        async function fetchArj() {
+            const res = await fetch("/api/arj");
+            const data = await res.json();
+
+            document.getElementById("adminArjList").innerHTML =
+                data.arj.length ?
+                    data.arj.map(a => `
+                    <div class="card">
+                    <h3>${a.title}</h3>
+
+                    <a href="/download/arj/${a.filename}" download class="btn">Download</a>
+
+                    <button onclick="deleteArj(${a.id})"
+                        style="margin-top:8px;background:#d9534f;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+                        Delete
+                        </button>
+                    </div>
+                    `).join("")
+                    :
+                    "<p>No Arj files uploaded</p>";
+        }
+
+        // Upload new Arj
+        document.getElementById("arjForm").addEventListener("submit", async e => {
+            e.preventDefault();
+
+            if (document.getElementById("arjPassword").value !== "shiva")
+                return alert("Incorrect password");
+
+            const fd = new FormData();
+            fd.append("title", document.getElementById("arjTitle").value.trim());
+            fd.append("file", document.getElementById("arjFile").files[0]);
+
+            await fetch("/admin/arj", {
+                method: "POST",
+                body: fd
+            });
+
+            e.target.reset();
+            fetchArj();
+        });
+
+        // socket updates
+        socket.on("new-data", (data) => {
+            if (data.type === "arj") fetchArj();
+        });
+
+        async function deleteArj(id) {
+            if (!confirm("Are you sure?")) return;
+
+            const pass = prompt("Admin Password:");
+            if (pass !== "shiva") return alert("Incorrect password!");
+
+            await fetch(`/admin/delete/arj/${id}`, {
+                method: "DELETE"
+            });
+
+
+            fetchArj();  // refresh list
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchArj();
+        });
+
         // sending emails
         document.getElementById("emailForm").addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -374,7 +457,6 @@
             window.location.href = "login.html";
         }
 
-        const socket = io();
         const ADMIN_PASSWORD = "shiva";
 
         /* ------------------------------------------------
@@ -598,9 +680,9 @@
 
         socket.on('new-data', fetchData);
 
-          /* ------------------------------------------------
-           ⭐ ADDED BY YOUR REQUEST
-        --------------------------------------------------*/
+        /* ------------------------------------------------
+         ⭐ ADDED BY YOUR REQUEST
+      --------------------------------------------------*/
         async function fetchAdminMembers() {
             try {
                 const res = await fetch("/api/members");

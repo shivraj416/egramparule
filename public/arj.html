@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <title>अर्ज (नमुना)</title>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 40px 10px;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background: url("assets/img/bg2.jpg") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Dark overlay */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.50);
+            backdrop-filter: blur(3px);
+            z-index: -1;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #fff;
+            font-size: 36px;
+            text-shadow: 0 0 12px #00eaff, 0 0 20px #00eaff;
+            animation: glowTitle 2s infinite alternate;
+        }
+
+        @keyframes glowTitle {
+            from { text-shadow: 0 0 10px #00eaff; }
+            to { text-shadow: 0 0 20px #00eaff, 0 0 35px #00eaff; }
+        }
+
+        /* Glass Card */
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            margin: auto;
+            max-width: 900px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        thead {
+            background: rgba(0,0,0,0.4);
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.15);
+            transition: 0.2s;
+        }
+
+        .download-btn {
+            padding: 8px 14px;
+            background: #00c8ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 0 8px #00c8ff;
+        }
+
+        .download-btn:hover {
+            background: #0096c7;
+            box-shadow: 0 0 12px #00eaff;
+        }
+
+        .search-box {
+            max-width: 300px;
+            margin-bottom: 15px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background: rgba(255,255,255,0.8);
+        }
+
+        @media(max-width: 600px) {
+            h1 { font-size: 28px; }
+            table { font-size: 15px; }
+            th, td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<h1>अर्ज (नमुना)</h1>
+
+<div class="card">
+
+    <!-- 🔍 Search Box -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="अर्ज शोधा...">
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>अनुक्रमांक</th>
+                <th>अर्जाचा विषय</th>
+                <th>डाउनलोड</th>
+            </tr>
+        </thead>
+        <tbody id="arjTable"></tbody>
+    </table>
+
+</div>
+
+<script>
+async function loadArj() {
+    const res = await fetch("/api/arj");
+    const data = await res.json();
+
+    window.arjList = data.arj;
+    renderTable(data.arj);
+}
+
+function renderTable(list) {
+    document.getElementById("arjTable").innerHTML =
+        list.length
+            ? list.map((a, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${a.title}</td>
+                    <td>
+                        <a href="/download/arj/${a.filename}" class="download-btn" download>
+                            डाउनलोड
+                        </a>
+                    </td>
+                </tr>
+            `).join("")
+            : "<tr><td colspan='3' style='text-align:center;'>काहीही अर्ज उपलब्ध नाहीत</td></tr>";
+}
+
+document.getElementById("searchInput").addEventListener("keyup", () => {
+    const q = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = window.arjList.filter(a => 
+        a.title.toLowerCase().includes(q)
+    );
+    renderTable(filtered);
+});
+
+loadArj();
+</script>
+
+</body>
+</html>
