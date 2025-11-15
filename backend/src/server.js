@@ -291,83 +291,121 @@ ${message}
     }
 });
 
-// ------------------ ARJ (FORM) UPLOAD ------------------
+// =======================================================
+// ⭐ CLOUDINARY SETUP (FOR RENDER + LOCALHOST)
+// =======================================================
+const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
 
-// 🔥 Render Fix — Ensure upload folder exists
-const ARJ_DIR = path.join(ROOT_DIR, "uploads/arj");
-fs.mkdirSync(ARJ_DIR, { recursive: true });
-
-const arjStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, ARJ_DIR);  // FIXED for Render
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + "-" + file.originalname);
-    }
+// Load environment variables
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const uploadArj = multer({ storage: arjStorage });
+// Use memory storage (files saved in RAM, then uploaded)
+const uploadArj = multer({ storage: multer.memoryStorage() });
 
+
+// =======================================================
+// ⭐ GET ALL ARJ
+// =======================================================
 app.get("/api/arj", (req, res) => {
     res.json({ arj: loadData().arj || [] });
 });
 
-// ------------------ UPLOAD ARJ ------------------
-app.post("/admin/arj", uploadArj.single("file"), (req, res) => {
+
+// =======================================================
+// ⭐ UPLOAD ARJ (PDF/DOCX/JPG/PNG SUPPORT)
+// =======================================================
+app.post("/admin/arj", uploadArj.single("file"), async (req, res) => {
     const { title } = req.body;
-    if (!title || !req.file)
+    if (!title || !req.file) {
         return res.json({ success: false, message: "Missing fields" });
+    }
 
-    const data = loadData();
-    const newFile = {
-        id: Date.now(),
-        title,
-        filename: req.file.filename,
-        url: `/uploads/arj/${req.file.filename}`
-    };
+    try {
+        // Upload file buffer to Cloudinary
+        const uploadStream = cloudinary.uploader.upload_stream(
+            {
+                folder: "arj_files",
+                resource_type: "raw"  // IMPORTANT for PDF, DOC, DOCX
+            },
+            (error, result) => {
+                if (error) {
+                    console.error(error);
+                    return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
+                }
 
-    if (!data.arj) data.arj = [];
-    data.arj.push(newFile);
-    saveData(data);
+                // Save in data.json
+                const data = loadData();
+                const newFile = {
+                    id: Date.now(),
+                    title,
+                    filename: result.public_id,  // needed for deletion
+                    url: result.secure_url       // cloudinary file link
+                };
 
-    io.emit("new-data", { type: "arj" });
+                if (!data.arj) data.arj = [];
+                data.arj.push(newFile);
+                saveData(data);
 
-    res.json({ success: true, file: newFile });
+                io.emit("new-data", { type: "arj" });
+
+                res.json({ success: true, file: newFile });
+            }
+        );
+
+        // Pipe file buffer to Cloudinary
+        uploadStream.end(req.file.buffer);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Upload error" });
+    }
 });
 
 
-// ------------------ DELETE ARJ FILE ------------------
-app.delete("/admin/delete/arj/:id", (req, res) => {
+// =======================================================
+// ⭐ DELETE ARJ (DELETE FROM CLOUDINARY + JSON)
+// =======================================================
+app.delete("/admin/delete/arj/:id", async (req, res) => {
     const id = req.params.id;
-
     const data = loadData();
-    const item = data.arj.find(a => a.id == id);
 
+    const item = data.arj.find(a => a.id == id);
     if (!item) {
         return res.status(404).json({ success: false, message: "ARJ not found" });
     }
 
-    // DELETE the actual file
-    const filePath = path.join(ROOT_DIR, "uploads/arj", item.filename);
-    if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);   // remove file
+    try {
+        // Delete from Cloudinary
+        await cloudinary.uploader.destroy(item.filename, { resource_type: "raw" });
+
+        // Remove from JSON
+        data.arj = data.arj.filter(a => a.id != id);
+        saveData(data);
+
+        io.emit("new-data", { type: "arj" });
+
+        res.json({ success: true });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Cloudinary delete failed" });
     }
-
-    // DELETE from database
-    data.arj = data.arj.filter(a => a.id != id);
-    saveData(data);
-
-    io.emit("new-data", { type: "arj" });
-
-    res.json({ success: true });
 });
 
-// ------------------ ARJ DOWNLOAD ------------------
+
+// =======================================================
+// ⭐ DOWNLOAD ARJ (NOT NEEDED BUT SAFE FALLBACK)
+// =======================================================
 app.get("/download/arj/:filename", (req, res) => {
-    const filePath = path.join(ROOT_DIR, "uploads/arj", req.params.filename);
-    res.download(filePath);
+    return res.json({
+        message: "File is stored on Cloudinary. Use the cloud URL from API."
+    });
 });
-
 
 // ----------------------------------------------------------
 // SOCKET.IO EVENTS
