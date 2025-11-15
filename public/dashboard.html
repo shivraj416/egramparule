@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dashboard - Admin</title>
+    <!-- ✅ Favicon added -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .new-dot {
+            width: 10px;
+            height: 10px;
+            background: orange;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+
+<!-- SUCCESS POPUP -->
+<div id="successPopup" class="popup">
+    Member Added Successfully! 🎉
+</div>
+
+<!-- DELETE POPUP -->
+<div id="deletePopup" class="popup" style="background:#dc3545;">
+    Member Deleted Successfully! 🗑️
+</div>
+
+<style>
+    .popup {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #28a745;
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+        z-index: 9999;
+    }
+
+    .popup.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<!-- NOTICE ADD POPUP -->
+<div id="noticeAddPopup" class="popup">
+    Notice Added Successfully! 📝
+</div>
+
+<!-- NOTICE DELETE POPUP -->
+<div id="noticeDeletePopup" class="popup delete">
+    Notice Deleted Successfully! 🗑️
+</div>
+
+<style>
+    .popup {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #28a745;
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+        z-index: 9999;
+    }
+
+    .popup.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .popup.delete {
+        background: #dc3545 !important;
+    }
+</style>
+
+<!-- Scheme ADD POPUP -->
+<div id="schemeAddPopup" class="popup">
+    Scheme Added Successfully! 📝
+</div>
+
+<!-- Scheme DELETE POPUP -->
+<div id="schemeDeletePopup" class="popup delete">
+    Scheme Deleted Successfully! 🗑️
+</div>
+
+<style>
+    .popup {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #28a745;
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+        z-index: 9999;
+    }
+
+    .popup.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .popup.delete {
+        background: #dc3545 !important;
+    }
+</style>
+
+<!-- IMAGE UPLOADED POPUP -->
+<div id="imageAddPopup" class="popup">
+    Image Uploaded Successfully! 🖼️
+</div>
+
+<!-- IMAGE DELETED POPUP -->
+<div id="imageDeletePopup" class="popup delete">
+    Image Deleted Successfully! 🗑️
+</div>
+
+<style>
+    .popup {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #28a745;
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+        z-index: 9999;
+    }
+
+    .popup.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .popup.delete {
+        background: #dc3545 !important;
+    }
+</style>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a class="brand" href="index.html">ग्रामपंचायत हरळ</a>
+            <button class="nav-toggle">☰</button>
+            <nav class="nav">
+                <a href="index.html">
+                    Home <span id="dotHome" class="new-dot" style="display:none;"></span>
+                </a>
+                <a href="about.html">
+                    About <span id="dotAbout" class="new-dot" style="display:none;"></span>
+                </a>
+                <a href="members.html">
+                    Members <span id="dotMembers" class="new-dot" style="display:none;"></span>
+                </a>
+                <a href="gallery.html">
+                    Gallery <span id="dotGallery" class="new-dot" style="display:none;"></span>
+                </a>
+                <a href="schemes.html">
+                    Schemes <span id="dotSchemes" class="new-dot" style="display:none;"></span>
+                </a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" class="cta">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container admin">
+        <h1>Admin Dashboard</h1>
+
+        <!-- Add Notice -->
+        <section class="card">
+            <h2>Add Notice / Info</h2>
+            <form id="infoForm">
+
+                <input id="infoTitle" placeholder="Title" required>
+
+                <textarea id="infoDesc" placeholder="Description" required></textarea>
+
+                <!-- ⭐ ADDED DROPDOWN HERE -->
+                <label>Notice Type:</label>
+                <select id="infoType">
+                    <option value="General">General</option>
+                    <option value="Important">Important</option>
+                    <option value="Urgent">Urgent</option>
+                </select>
+                <!-- ⭐ END DROPDOWN -->
+
+                <input id="infoPassword" type="password" placeholder="Admin Password" required>
+                <button type="submit">Add Info</button>
+            </form>
+        </section>
+
+        <!-- Add Member -->
+        <section class="card">
+            <h2>Add Member</h2>
+            <form id="memberForm">
+                <input id="memberName" placeholder="Name" required>
+                <input id="memberRole" placeholder="Role" required>
+                <input id="memberContact" placeholder="Contact" required>
+                <input id="memberPassword" type="password" placeholder="Admin Password" required>
+                <button type="submit">Add Member</button>
+            </form>
+        </section>
+
+        <!-- Add Scheme -->
+        <section class="card">
+            <h2>Add Scheme</h2>
+            <form id="schemeForm">
+                <input id="schemeTitle" placeholder="Title" required>
+                <textarea id="schemeDesc" placeholder="Description" required></textarea>
+
+                <label>Start:</label><input id="schemeStart" type="date" required>
+                <label>End:</label><input id="schemeEnd" type="date" required>
+
+                <input id="schemePassword" type="password" placeholder="Admin Password" required>
+                <button type="submit">Add Scheme</button>
+            </form>
+        </section>
+
+        <!-- Upload Image -->
+        <section class="card">
+            <h2>Upload Image</h2>
+            <form id="imageForm">
+                <input id="imageFile" type="file" accept="image/*" required>
+                <input id="imagePassword" type="password" placeholder="Admin Password" required>
+                <button type="submit">Upload</button>
+            </form>
+        </section>
+
+        <!-- Existing Data -->
+        <h2>Existing Notices</h2>
+        <div id="adminInfoList" class="cards"></div>
+
+        <h2>Existing Members</h2>
+        <div id="adminMembers" class="cards">Loading members...</div>
+
+        <h2>Existing Schemes</h2>
+        <div id="adminSchemes" class="cards"></div>
+
+        <h2>Existing Images</h2>
+        <div id="adminGallery" class="gallery-grid"></div>
+    </main>
+
+    <section class="card">
+        <h2>Send Email to User</h2>
+        <form id="emailForm">
+            <input type="text" id="emailName" placeholder="User Name" required>
+            <input type="email" id="emailAddress" placeholder="User Email" required>
+            <textarea id="emailMessage" placeholder="Enter message..." required></textarea>
+            <button type="submit">Send Email</button>
+        </form>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container"><small>✅ © ग्रामपंचायत हरळ</small></div>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // sending emails
+        document.getElementById("emailForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const data = {
+                name: document.getElementById("emailName").value.trim(),
+                email: document.getElementById("emailAddress").value.trim(),
+                message: document.getElementById("emailMessage").value.trim()
+            };
+
+            const res = await fetch("/admin/send-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                alert("📩 Email sent successfully!");
+                e.target.reset();
+            } else {
+                alert("❌ Failed: " + result.error);
+            }
+        });
+
+
+        //member pop up
+        function showSuccessPopup() {
+            const popup = document.getElementById("successPopup");
+            popup.classList.add("show");
+            setTimeout(() => popup.classList.remove("show"), 2000);
+        }
+
+        function showDeletePopup() {
+            const popup = document.getElementById("deletePopup");
+            popup.classList.add("show");
+            setTimeout(() => popup.classList.remove("show"), 2000);
+        }
+
+        // Notice pop up
+        function showNoticeAddPopup() {
+            const p = document.getElementById("noticeAddPopup");
+            p.classList.add("show");
+            setTimeout(() => p.classList.remove("show"), 2000);
+        }
+
+        function showNoticeDeletePopup() {
+            const p = document.getElementById("noticeDeletePopup");
+            p.classList.add("show");
+            setTimeout(() => p.classList.remove("show"), 2000);
+        }
+
+        // Scheme pop up
+        function showSchemeAddPopup() {
+            const p = document.getElementById("schemeAddPopup");
+            p.classList.add("show");
+            setTimeout(() => p.classList.remove("show"), 2000);
+        }
+
+        function showSchemeDeletePopup() {
+            const p = document.getElementById("schemeDeletePopup");
+            p.classList.add("show");
+            setTimeout(() => p.classList.remove("show"), 2000);
+        }
+
+        // Image Pop Up
+        function showImageAddPopup() {
+            const p = document.getElementById("imageAddPopup");
+            p.classList.add("show");
+            setTimeout(() => p.classList.remove("show"), 2000);
+        }
+
+        function showImageDeletePopup() {
+            const p = document.getElementById("imageDeletePopup");
+            p.classList.add("show");
+            setTimeout(() => p.classList.remove("show"), 2000);
+        }
+
+
+        if (localStorage.getItem("isAdminLoggedIn") !== "true") {
+            window.location.href = "login.html";
+        }
+
+        const socket = io();
+        const ADMIN_PASSWORD = "shiva";
+
+        /* ------------------------------------------------
+            🔥 SHOW DOTS BASED ON LOCALSTORAGE
+        --------------------------------------------------*/
+        function showDots() {
+            if (localStorage.getItem("newInfo") === "yes")
+                document.getElementById("dotHome").style.display = "inline-block";
+
+            if (localStorage.getItem("newMembers") === "yes")
+                document.getElementById("dotMembers").style.display = "inline-block";
+
+            if (localStorage.getItem("newGallery") === "yes")
+                document.getElementById("dotGallery").style.display = "inline-block";
+
+            if (localStorage.getItem("newSchemes") === "yes")
+                document.getElementById("dotSchemes").style.display = "inline-block";
+        }
+
+        showDots();
+
+        /* ------------------------------------------------
+            🔥 WHEN ADMIN ADDS NEW DATA → SET FLAGS
+        --------------------------------------------------*/
+        socket.on("new-data", (data) => {
+            if (data.type === "info") localStorage.setItem("newInfo", "yes");
+            if (data.type === "members") localStorage.setItem("newMembers", "yes");
+            if (data.type === "gallery") localStorage.setItem("newGallery", "yes");
+            if (data.type === "schemes") localStorage.setItem("newSchemes", "yes");
+
+            showDots();
+        });
+
+        /* ------------------------------------------------
+            🔥 WHEN USER OPENS DASHBOARD → MARK AS SEEN
+        --------------------------------------------------*/
+        window.addEventListener("load", () => {
+            localStorage.setItem("newInfo", "no");
+            localStorage.setItem("newMembers", "no");
+            localStorage.setItem("newGallery", "no");
+            localStorage.setItem("newSchemes", "no");
+        });
+
+        /* ---------------- ORIGINAL CODE BELOW (UNCHANGED) ---------------- */
+
+        async function fetchData() {
+            try {
+                const infoRes = await fetch('/api/info');
+                const infos = await infoRes.json();
+                infos.info.sort((a, b) => b.id - a.id);
+
+                /* ------------------ FIXED NOTICE RENDER (AUTO COLORS) ------------------ */
+                document.getElementById('adminInfoList').innerHTML = infos.info.length ?
+                    infos.info.map(i => {
+
+                        // ⭐ Auto color based on type
+                        let badgeClass = "badge-general";   // blue
+                        if (i.type === "Important") badgeClass = "badge-important";  // red
+                        if (i.type === "Urgent") badgeClass = "badge-urgent";        // orange
+
+                        return `
+                        <div class="card">
+                            <span class="admin-badge ${badgeClass}">
+                                ${i.type || "General"}
+                            </span>
+
+                            <h3>${i.title}</h3>
+                            <p>${i.description || i.desc}</p>
+
+                            <button onclick="deleteInfo(${i.id})">Delete</button>
+                        </div>
+                    `;
+                    }).join('')
+                    :
+                    `<p>No notices yet</p>`;
+
+
+                const schRes = await fetch('/api/schemes');
+                const schs = await schRes.json();
+                document.getElementById('adminSchemes').innerHTML = schs.schemes.length ?
+                    schs.schemes.map(s =>
+                        `<div class="card">
+                            <h3>${s.title}</h3>
+                            <p>${s.description}</p>
+                            <p>${s.start} → ${s.end}</p>
+                            <button onclick="deleteScheme(${s.id})">Delete</button>
+                        </div>`).join('') :
+                    '<p>No schemes yet</p>';
+
+                const galRes = await fetch('/api/gallery');
+                const gal = await galRes.json();
+                document.getElementById('adminGallery').innerHTML = gal.images.length ?
+                    gal.images.map(img =>
+                        `<div>
+                            <img src="${img.url}" alt="${img.alt}" />
+                            <button onclick="deleteImage(${img.id})">Delete</button>
+                        </div>`).join('') :
+                    '<p>No images yet</p>';
+            } catch (e) {
+                console.error("Error fetching data:", e);
+            }
+        }
+
+        async function deleteInfo(id) {
+            if (prompt("Admin Password:") !== ADMIN_PASSWORD) return alert("Incorrect");
+            await fetch(`/admin/delete/info/${id}`, { method: 'DELETE' });
+            fetchData();
+            showNoticeDeletePopup();
+        }
+
+        async function deleteMember(id) {
+            if (prompt("Admin Password:") !== ADMIN_PASSWORD) return alert("Incorrect");
+
+            await fetch(`/admin/delete/member/${id}`, { method: "DELETE" });
+
+            fetchAdminMembers();  // ⭐ refresh list
+            fetchData();
+
+            showDeletePopup();
+        }
+
+
+        async function deleteScheme(id) {
+            if (prompt("Admin Password:") !== ADMIN_PASSWORD) return alert("Incorrect");
+            await fetch(`/admin/delete/scheme/${id}`, { method: 'DELETE' });
+            fetchData();
+            showSchemeDeletePopup();  // 🔥 popup
+        }
+
+        async function deleteImage(id) {
+            if (prompt("Admin Password:") !== ADMIN_PASSWORD) return alert("Incorrect");
+            await fetch(`/admin/delete/image/${id}`, {
+                method: 'DELETE'
+            });
+            fetchData();
+            showImageDeletePopup();   // 🔥 popup
+        }
+
+        document.getElementById('infoForm').addEventListener('submit', async e => {
+            e.preventDefault();
+
+            if (document.getElementById('infoPassword').value !== ADMIN_PASSWORD)
+                return alert("Incorrect password");
+
+            await fetch('/admin/upload', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    title: document.getElementById('infoTitle').value.trim(),
+                    description: document.getElementById('infoDesc').value.trim(),
+                    type: document.querySelector("#infoType option:checked").value
+                })
+            });
+            e.target.reset();
+            fetchData();
+            showNoticeAddPopup();   // 🔥 popup here
+        });
+
+        document.getElementById('memberForm').addEventListener('submit', async e => {
+            e.preventDefault();
+
+            if (document.getElementById('memberPassword').value !== ADMIN_PASSWORD)
+                return alert("Incorrect password");
+
+            await fetch('/admin/members', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: document.getElementById('memberName').value.trim(),
+                    role: document.getElementById('memberRole').value.trim(),
+                    contact: document.getElementById('memberContact').value.trim()
+                })
+            });
+
+            e.target.reset();
+            fetchData();
+
+            // 🔥 SHOW POPUP AFTER SUCCESS
+            showSuccessPopup();
+        });
+
+
+        document.getElementById('schemeForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            if (document.getElementById('schemePassword').value !== ADMIN_PASSWORD) return alert("Incorrect password");
+            await fetch('/admin/schemes', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    title: document.getElementById('schemeTitle').value.trim(),
+                    description: document.getElementById('schemeDesc').value.trim(),
+                    start: document.getElementById('schemeStart').value,
+                    end: document.getElementById('schemeEnd').value
+                })
+            });
+
+            e.target.reset();
+            fetchData();
+            showSchemeAddPopup();   // popup added
+        });
+
+        document.getElementById('imageForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            if (document.getElementById('imagePassword').value !== ADMIN_PASSWORD) return alert("Incorrect password");
+            const file = document.getElementById('imageFile').files[0];
+            if (!file) return alert("Select an image");
+
+            const fd = new FormData();
+            fd.append('image', file);
+
+            await fetch('/admin/gallery', {
+                method: 'POST',
+                body: fd
+            });
+            e.target.reset();
+            fetchData();
+            showImageAddPopup();   // 🔥 Popup Added Here
+        });
+
+        socket.on('new-data', fetchData);
+
+          /* ------------------------------------------------
+           ⭐ ADDED BY YOUR REQUEST
+        --------------------------------------------------*/
+        async function fetchAdminMembers() {
+            try {
+                const res = await fetch("/api/members");
+                const data = await res.json();
+                const adminBox = document.getElementById("adminMembers");
+
+                if (!adminBox) return;
+
+                if (!data.members.length) {
+                    adminBox.innerHTML = "<p>No members found</p>";
+                    return;
+                }
+
+                adminBox.innerHTML = data.members.map(m => `
+                    <div class="card">
+                        <h3>${m.name}</h3>
+                        <p><b>Role:</b> ${m.role}</p>
+                        <p><b>Contact:</b> ${m.contact}</p>
+                        <button onclick="deleteMember(${m.id})">Delete</button>
+                    </div>
+                `).join("");
+
+            } catch (err) {
+                console.error("Admin member load error:", err);
+            }
+        }
+
+        /* ------------------------------------------------
+           ⭐ FIX: Load Members Correctly on Dashboard
+        --------------------------------------------------*/
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchData();
+            fetchAdminMembers();
+        });
+    </script>
+</body>
+
+</html>

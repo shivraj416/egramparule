@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Contact - Gram Panchayat</title>
+    <!-- ✅ Favicon added -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a class="brand" href="index.html">ग्रामपंचायत हरळ</a>
+            <button id="navToggle6" class="nav-toggle">☰</button>
+            <nav id="mainNav6" class="nav">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="members.html">Members</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="schemes.html">Schemes</a>
+                <a href="contact.html" class="active">Contact</a>
+                <a href="login.html" class="cta">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>Contact Us</h1>
+        <p id="contactInfo">Address, phone, email, office hours.</p>
+
+        <form id="contactForm">
+            <label>Name
+                <input type="text" name="name" required>
+            </label>
+
+            <label>Email
+                <input type="email" name="email" required>
+            </label>
+
+            <label>Message
+                <textarea name="message" required></textarea>
+            </label>
+
+            <button type="submit">Send</button>
+        </form>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>✅ © ग्रामपंचायत हरळ</small>
+        </div>
+    </footer>
+
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- 🌟 Only ONE socket instance -->
+    <script>
+        const socket = io();
+
+        socket.on('new-data', (data) => {
+            if (data.type === "contact") {
+                console.log("New contact update received");
+            }
+        });
+    </script>
+
+    <!-- ⭐ CONTACT FORM BACKEND INTEGRATION -->
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const res = await fetch('/api/send-message', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: this.name.value,
+                    email: this.email.value,
+                    message: this.message.value
+                })
+            });
+
+            if (!res.ok) {
+                alert("❌ Server not responding (404). Backend route missing.");
+                return;
+            }
+
+            const data = await res.json();
+
+            if (data.success) {
+                alert(" Server is busy!!");
+                this.reset();
+            } else {
+                alert("❌ Failed to send message.");
+            }
+        });
+
+    </script>
+
+    <!-- REMOVE SECOND SOCKET FROM script.js -->
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>

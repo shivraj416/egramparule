@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gallery - Gram Panchayat</title>
+    <!-- ✅ Favicon added -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .new-dot {
+            width: 10px;
+            height: 10px;
+            background: orange;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 4px;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 45px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 5px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ⭐ IMPORTANT FIX – MAKE IMAGES CLICKABLE */
+        #gallery img {
+            cursor: pointer !important;
+            pointer-events: auto !important;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a class="brand" href="index.html">ग्रामपंचायत हरळ</a>
+            <button id="navToggle4" class="nav-toggle">☰</button>
+            <nav id="mainNav4" class="nav">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="members.html">Members</a>
+                <a href="gallery.html" class="active">
+                    Gallery
+                    <span id="dotGallery" class="new-dot" style="display:none;"></span>
+                </a>
+                <a href="schemes.html">Schemes</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" class="cta">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <span class="close-btn" id="closeLightbox">×</span>
+        <img id="lightboxImg" src="">
+    </div>
+
+    <main class="container">
+        <h1>Gallery</h1>
+        <p>Images uploaded by admin appear below.</p>
+
+        <div class="gallery-scroll-box">
+            <div id="gallery" class="gallery-grid"></div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>© ग्रामपंचायत हरळ</small>
+        </div>
+    </footer>
+
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        const socket = io();
+        const galleryEl = document.getElementById("gallery");
+        const dotGallery = document.getElementById("dotGallery");
+
+        socket.on("new-data", (data) => {
+            if (data.type === "gallery") {
+                localStorage.setItem("newGallery", "yes");
+                showGalleryDot();
+                loadGallery();
+            }
+        });
+
+        function showGalleryDot() {
+            if (localStorage.getItem("newGallery") === "yes") {
+                dotGallery.style.display = "inline-block";
+            }
+        }
+
+        window.addEventListener("load", () => {
+            localStorage.setItem("newGallery", "no");
+            dotGallery.style.display = "none";
+        });
+
+        // FETCH IMAGES
+        async function loadGallery() {
+            try {
+                const res = await fetch("/api/gallery");
+                const data = await res.json();
+                const images = data.images;
+
+                galleryEl.innerHTML = "";
+
+                if (!images.length) {
+                    galleryEl.innerHTML = `<p>No images uploaded yet</p>`;
+                    return;
+                }
+
+                images.forEach(img => {
+                    const imgEl = document.createElement("img");
+                    imgEl.src = img.url;
+                    imgEl.alt = img.alt || "Gallery Image";
+
+                    imgEl.onclick = () => {
+                        document.getElementById("lightboxImg").src = img.url;
+                        document.getElementById("lightbox").style.display = "flex";
+                    };
+
+                    galleryEl.appendChild(imgEl);
+                });
+
+            } catch (error) {
+                console.error("Error loading gallery:", error);
+            }
+        }
+
+        loadGallery();
+
+        // CLOSE LIGHTBOX
+        document.getElementById("closeLightbox").addEventListener("click", () => {
+            document.getElementById("lightbox").style.display = "none";
+        });
+
+        document.getElementById("lightbox").addEventListener("click", (e) => {
+            if (e.target === e.currentTarget) {
+                document.getElementById("lightbox").style.display = "none";
+            }
+        });
+    </script>
+
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>

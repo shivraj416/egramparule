@@ -1,0 +1,21 @@
+{
+    "name": "grampanchayat-harule",
+    "version": "1.0.0",
+    "description": "Gram Panchayat website project",
+    "main": "index.js",
+    "scripts": {
+        "dev": "node index.js",
+        "start": "node index.js"
+    },
+    "author": "Shivraj",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.21.2",
+        "multer": "^2.0.2",
+        "nodemailer": "^7.0.10",
+        "socket.io": "^4.8.1"
+    },
+    "devDependencies": {
+        "@types/node": "^24.10.1"
+    }
+}

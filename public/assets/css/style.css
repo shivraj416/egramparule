@@ -1,0 +1,250 @@
+:root {
+    --primary: #0b5ed7;
+    --muted: #666;
+    --bg: #f7f8fb;
+    --card: #fff;
+    --pad: 14px;
+    --container: 1100px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Inter, system-ui, Segoe UI, Arial;
+    background: var(--bg);
+    color: #222;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 16px;
+}
+
+/* Header */
+.site-header {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.site-header .container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand {
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.nav {
+    margin-left: auto;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.nav a {
+    padding: 10px 12px;
+    text-decoration: none;
+    color: var(--muted);
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.nav a.active,
+.nav a:hover {
+    color: #000;
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.cta {
+    background: var(--primary);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+/* Mobile nav toggle */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: 0;
+    font-size: 20px;
+}
+
+/* Cards layout */
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.card {
+    background: var(--card);
+    padding: var(--pad);
+    border-radius: 8px;
+    flex: 1 1 220px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+.gallery-grid img {
+    width: 110px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    z-index: 999 !important;
+    position: relative !important;
+}
+
+/* LIGHTBOX FIXED */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999 !important;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    animation: zoomIn 0.2s ease-in-out;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.lightbox .close-btn {
+    position: fixed;
+    top: 20px;
+    right: 25px;
+    font-size: 45px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 20000;
+}
+
+/* GALLERY SCROLL BOX */
+.gallery-scroll-box {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Forms */
+input[type=text],
+input[type=password],
+input[type=file],
+textarea,
+input[type=date] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    background: var(--primary);
+    color: #fff;
+    border: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    opacity: 0.95;
+}
+
+/* MEMBER LIST SCROLL BOX */
+.member-scroll-box {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.notice-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.tag-important { background: #d9534f; color: white; } /* RED */
+.tag-urgent { background: #f0ad4e; color: black; }    /* ORANGE */
+.tag-general { background: #0275d8; color: white; }   /* BLUE */
+
+
+/* FOOTER */
+.site-footer {
+    padding: 20px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+    .nav {
+        position: absolute;
+        right: 12px;
+        top: 58px;
+        background: #fff;
+        flex-direction: column;
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+        display: none;
+    }
+
+    .nav-toggle {
+        display: block;
+        margin-left: auto;
+    }
+
+    .nav.show {
+        display: flex;
+    }
+}

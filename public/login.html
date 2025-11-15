@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin Login</title>
+    <!-- ✅ Favicon added -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+    <style>
+        /* 🌄 FULL PAGE BACKGROUND IMAGE */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background: url("assets/img/bg.jpg") no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 🌑 DARK OVERLAY */
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 0;
+        }
+
+        /* Glassmorphism Box */
+        .login-box {
+            width: 350px;
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.8s ease-in-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ✨ HEADING GLOW EFFECT */
+        .login-box h2 {
+            font-size: 26px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 0 10px #ffffff, 0 0 25px #00eaff;
+            animation: glowHeading 2s infinite alternate;
+        }
+
+        @keyframes glowHeading {
+            from { text-shadow: 0 0 10px #fff, 0 0 25px #00eaff; }
+            to { text-shadow: 0 0 20px #fff, 0 0 40px #00f6ff; }
+        }
+
+        .login-box p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px 0;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            background: #ffcc00;
+            font-weight: 600;
+            transition: 0.25s ease;
+        }
+
+        .login-box button:hover {
+            background: #ffd633;
+            transform: scale(1.03);
+        }
+
+        .error {
+            margin-top: 10px;
+            color: #ffdddd;
+            font-size: 14px;
+            display: none;
+        }
+
+        .admin-badge {
+            background: #ffd700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+            margin-bottom: 10px;
+            color: #222;
+            font-weight: 600;
+        }
+
+        /* SUCCESS POPUP */
+        .popup {
+            position: fixed;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4cd964;
+            padding: 12px 25px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 16px;
+            opacity: 0;
+            transition: all .4s ease;
+            z-index: 9999;
+        }
+
+        .popup.show {
+            top: 20px;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- DARK OVERLAY -->
+    <div class="bg-overlay"></div>
+
+    <!-- SUCCESS POPUP -->
+    <div id="loginSuccessPopup" class="popup">
+        Login Successful! ✔️
+    </div>
+
+    <div class="login-box">
+        <div class="admin-badge">ADMIN ACCESS ONLY</div>
+
+        <h2>Welcome Admin</h2>
+        <p>कृपया लॉगिन करण्यासाठी पासवर्ड टाका</p>
+
+        <input type="password" id="adminPass" placeholder="Enter Admin Password">
+        <button onclick="loginAdmin()">Login</button>
+
+        <p id="errorMsg" class="error">Incorrect Password!</p>
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = "admin123";
+
+        function showLoginSuccessPopup() {
+            const p = document.getElementById("loginSuccessPopup");
+            p.classList.add("show");
+            setTimeout(() => p.classList.remove("show"), 2000);
+        }
+
+        function loginAdmin() {
+            const pass = document.getElementById("adminPass").value;
+            const errorBox = document.getElementById("errorMsg");
+
+            if (pass === CORRECT_PASSWORD) {
+
+                showLoginSuccessPopup();
+                localStorage.setItem("isAdminLoggedIn", "true");
+
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 1200);
+
+            } else {
+                errorBox.style.display = "block";
+                errorBox.textContent = "❌ चुकीचा पासवर्ड!";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

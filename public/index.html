@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gram Panchayat - Home</title>
+    <!-- ✅ Favicon added -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        /* 🌄 FULL PAGE BACKGROUND IMAGE */
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("assets/img/bg.jpg") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* 🌑 DARK OVERLAY */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: -1;
+        }
+
+        .new-dot {
+            width: 10px;
+            height: 10px;
+            background: orange;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 4px;
+        }
+
+        /* ✨ GLOW TEXT EFFECT */
+        .hero h1 {
+            color: #fff;
+            text-shadow: 0 0 8px #ffffff, 0 0 20px #00eaff;
+            animation: glowText 2s infinite alternate;
+        }
+
+        .hero p {
+            color: #f5f5f5;
+            text-shadow: 0 0 6px #ffffff, 0 0 12px #00c6ff;
+            animation: glowSoft 2.5s infinite alternate;
+        }
+
+        /* KEYFRAMES */
+        @keyframes glowText {
+            from {
+                text-shadow: 0 0 8px #fff, 0 0 20px #00eaff, 0 0 35px #00eaff;
+            }
+
+            to {
+                text-shadow: 0 0 15px #fff, 0 0 30px #00f6ff, 0 0 45px #00f6ff;
+            }
+        }
+
+        @keyframes glowSoft {
+            from {
+                text-shadow: 0 0 6px #fff, 0 0 12px #00c6ff;
+            }
+
+            to {
+                text-shadow: 0 0 12px #fff, 0 0 20px #00eaff;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- DARK OVERLAY -->
+    <div class="bg-overlay"></div>
+
+    <!-- NAVBAR -->
+    <header class="site-header">
+        <div class="container">
+            <a class="brand" href="index.html">ग्रामपंचायत हरळ</a>
+            <button id="navToggle" class="nav-toggle">☰</button>
+            <nav id="mainNav" class="nav">
+                <a href="index.html" class="active">
+                    Home
+                    <span id="dotHome" class="new-dot" style="display:none;"></span>
+                </a>
+                <a href="about.html">About</a>
+                <a href="members.html">Members</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="schemes.html">Schemes</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" class="cta">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <main>
+        <section class="hero container">
+            <h1>⭐ “ई-ग्रामपंचायत हरळ येथे आपले सहर्ष स्वागत आहे.”</h1>
+            <p>“पारदर्शकता आणि निष्ठेने जनसेवेसाठी आम्ही वचनबद्ध आहोत.”</p>
+        </section>
+
+        <!-- LOCATION MAP -->
+        <section class="map container">
+
+            <h3 style="
+                font-size: 18px;
+                font-weight: 600;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                color: #fff;
+                text-shadow: 0 0 6px #00eaff;
+            ">
+                📍 हरळ (राजापूर, महाराष्ट्र)
+            </h3>
+
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15379.051886766696!2d73.5179571!3d16.6390669!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcfa9271d6ae1f1%3A0x8b7e7a98e3c6d1e!2sHaral%2C%20Maharashtra%20416113!5e0!3m2!1sen!2sin!4v1731573140000!5m2!1sen!2sin"
+                width="100%" height="420" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+
+        </section>
+
+        <!-- Notices Section -->
+        <section class="info-list container">
+            <h2 style="color:white; text-shadow:0 0 6px #00eaff;">Notices & Info</h2>
+
+            <input type="text" id="noticeSearch" class="search-box" placeholder="🔍 नोटीस शोधा...">
+
+            <div class="info-scroll-box">
+                <div id="infoItems" class="cards"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>© हरळ ग्रामपंचायत • समर्पित सेवेसह निर्मित ❤️</small>
+        </div>
+    </footer>
+
+    <!-- REAL-TIME DATA HANDLING -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const infoContainer = document.getElementById('infoItems');
+    const searchInput = document.getElementById('noticeSearch');
+    const dotHome = document.getElementById('dotHome');
+
+    let allNotices = [];
+
+    function showHomeDot() {
+        if (localStorage.getItem("newInfo") === "yes") {
+            dotHome.style.display = "inline-block";
+        }
+    }
+    showHomeDot();
+
+    socket.on("new-data", (data) => {
+        if (data.type === "info") {
+            localStorage.setItem("newInfo", "yes");
+            showHomeDot();
+        }
+    });
+
+    window.addEventListener("load", () => {
+        localStorage.setItem("newInfo", "no");
+        dotHome.style.display = "none";
+    });
+
+    /* ---------------------------------------------
+       RENDER INFO WITH COLOR BADGES (FIXED)
+    ----------------------------------------------*/
+    function renderInfo(items) {
+        infoContainer.innerHTML = '';
+        if (!Array.isArray(items)) return;
+
+        items.forEach(item => {
+            const noticeType = item.type || "General";
+
+            // ⭐ Color selection
+            let tagClass = "tag-general";     // blue
+            if (noticeType === "Important") tagClass = "tag-important"; // red
+            if (noticeType === "Urgent") tagClass = "tag-urgent";       // orange
+
+            const card = document.createElement('div');
+            card.className = 'card info-card';
+
+            card.innerHTML = `
+                <span class="notice-tag ${tagClass}">${noticeType}</span>
+                <h3>${item.title}</h3>
+                <p>${item.description || item.desc || ""}</p>
+            `;
+
+            infoContainer.appendChild(card);
+        });
+    }
+
+    /* ---------------------------------------------
+       FETCH INITIAL DATA
+    ----------------------------------------------*/
+    fetch('/api/info')
+        .then(res => res.json())
+        .then(data => {
+            data.info.sort((a, b) => b.id - a.id);
+            allNotices = data.info;
+            renderInfo(allNotices);
+        });
+
+    /* ---------------------------------------------
+       LIVE UPDATE ON SOCKET EVENT
+    ----------------------------------------------*/
+    socket.on('new-data', () => {
+        fetch('/api/info')
+            .then(res => res.json())
+            .then(data => {
+                data.info.sort((a, b) => b.id - a.id);
+                allNotices = data.info;
+                renderInfo(allNotices);
+            });
+    });
+
+    /* ---------------------------------------------
+       SEARCH FILTER
+    ----------------------------------------------*/
+    searchInput.addEventListener("keyup", () => {
+        const q = searchInput.value.toLowerCase();
+        const filtered = allNotices.filter(n =>
+            n.title.toLowerCase().includes(q) ||
+            (n.description || n.desc || "").toLowerCase().includes(q) ||
+            (n.type || "General").toLowerCase().includes(q)
+        );
+        renderInfo(filtered);
+    });
+</script>
+
+</body>
+</html>

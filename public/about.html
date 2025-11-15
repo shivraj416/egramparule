@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>About - Gram Panchayat</title>
+    <!-- ✅ Favicon added -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        /* 🌄 FULL PAGE BACKGROUND IMAGE */
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("assets/img/bg.jpg") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* 🌑 DARK OVERLAY */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: -1;
+        }
+
+        /* About content card */
+        #aboutContent {
+            line-height: 1.8;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+        }
+
+        /* NORMAL (NO GLOW) About Section Title */
+        #aboutContent h2 {
+            font-size: 26px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            border-left: 5px solid #4CAF50;
+            padding-left: 10px;
+            color: #2a5d2a;
+            text-shadow: none !important;
+            animation: none !important;
+        }
+
+        /* NORMAL (NO GLOW) Subheadings */
+        #aboutContent h3 {
+            margin-top: 25px;
+            font-size: 22px;
+            color: #444;
+            text-shadow: none !important;
+            animation: none !important;
+        }
+
+        #aboutContent p {
+            margin: 10px 0 20px 0;
+            color: #222;
+        }
+
+        /* ✨ Glow ONLY on Main Heading */
+        h1 {
+            color: #fff;
+            text-shadow: 0 0 10px #ffffff, 0 0 25px #00eaff;
+            animation: glowHeading 2s infinite alternate;
+        }
+
+        /* Keyframes */
+        @keyframes glowHeading {
+            from { text-shadow: 0 0 10px #fff, 0 0 25px #00eaff; }
+            to { text-shadow: 0 0 20px #fff, 0 0 40px #00f6ff; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- DARK OVERLAY -->
+    <div class="bg-overlay"></div>
+
+    <header class="site-header">
+        <div class="container">
+            <a class="brand" href="index.html">ग्रामपंचायत हरळ</a>
+            <button id="navToggle2" class="nav-toggle">☰</button>
+            <nav id="mainNav2" class="nav">
+                <a href="index.html">Home</a>
+                <a href="about.html" class="active">About</a>
+                <a href="members.html">Members</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="schemes.html">Schemes</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" class="cta">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- ✨ ONLY this heading glows -->
+        <h1 style="margin-top:20px;">🌿 “आपली ग्रामपंचायत – एक परिचय”</h1>
+
+        <div id="aboutContent">
+            <h2>⭐ ग्रामपंचायतीबद्दल माहिती</h2>
+
+            <h3>✅ ध्येय (Mission)</h3>
+            <p>
+                ग्रामपंचायत हरळचे ध्येय म्हणजे गावातील प्रत्येक नागरिकाच्या सर्वांगीण विकासासाठी पारदर्शक,
+                जबाबदार आणि लोकाभिमुख प्रशासन देणे. मूलभूत सुविधा, स्वच्छता, पाणीपुरवठा, आरोग्य व शिक्षण
+                या सर्व क्षेत्रांमध्ये गुणवत्तापूर्ण सेवा पुरवणे ही आमची बांधिलकी आहे.
+            </p>
+
+            <h3>✅ दृष्टिकोन (Vision)</h3>
+            <p>
+                “स्वच्छ, सुशिक्षित, सुरक्षित आणि स्वावलंबी हरळ ग्राम” हा आमचा भविष्योन्मुख दृष्टिकोन आहे.
+                गावातील पायाभूत सुविधा मजबूत करणे, डिजिटल सेवांचा विस्तार करणे आणि ग्रामविकासात
+                नागरिकांचा सक्रिय सहभाग वाढवणे हा आमचा प्रयत्न आहे.
+            </p>
+
+            <h3>✅ इतिहास (History)</h3>
+            <p>
+                हरळ ग्रामपंचायत ही अनेक वर्षांची सामाजिक आणि सांस्कृतिक परंपरा जपणारी संस्था आहे.
+                गावाच्या प्रगतीसाठी अनेक योजनांची यशस्वी अंमलबजावणी आजवर करण्यात आली आहे.
+                गावातील शैक्षणिक, कृषी, आरोग्य आणि सामाजिक विकासात ग्रामपंचायतीची महत्त्वपूर्ण भूमिका आहे.
+            </p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>✅ © ग्रामपंचायत हरळ</small>
+        </div>
+    </footer>
+
+    <!-- Socket.io (UNCHANGED) -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.on('new-data', () => {
+            fetch('/api/about')
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.content) {
+                        document.getElementById('aboutContent').textContent = data.content;
+                    }
+                })
+                .catch(() => { });
+        });
+    </script>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

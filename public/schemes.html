@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Schemes - Gram Panchayat</title>
+    <!-- ✅ Favicon added -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .new-dot {
+            width: 10px;
+            height: 10px;
+            background: orange;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a class="brand" href="index.html">ग्रामपंचायत हरळ</a>
+            <button id="navToggle5" class="nav-toggle">☰</button>
+            <nav id="mainNav5" class="nav">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="members.html">Members</a>
+                <a href="gallery.html">Gallery</a>
+
+                <a href="schemes.html" class="active">
+                    Schemes
+                    <span id="dotSchemes" class="new-dot" style="display:none;"></span>
+                </a>
+
+                <a href="contact.html">Contact</a>
+                <a href="login.html" class="cta">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>शासकीय योजना</h1>
+
+        <input type="text" id="schemeSearch" class="search-box" placeholder="योजना शोधा…">
+
+        <div class="scheme-scroll-box">
+            <div id="schemeList" class="cards"></div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container"><small>© ग्रामपंचायत हरळ</small></div>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        const socket = io();
+        const schemeListEl = document.getElementById("schemeList");
+        const schemeSearch = document.getElementById("schemeSearch");
+        const dotSchemes = document.getElementById("dotSchemes");
+
+        let allSchemes = [];
+
+        /* Show dot if new */
+        function showSchemeDot() {
+            if (localStorage.getItem("newSchemes") === "yes") {
+                dotSchemes.style.display = "inline-block";
+            }
+        }
+        showSchemeDot();
+
+        /* Reload when admin adds new */
+        socket.on("new-data", (data) => {
+            if (data.type === "schemes") {
+                localStorage.setItem("newSchemes", "yes");
+                showSchemeDot();
+                loadSchemes();
+            }
+        });
+
+        /* Clear dot when opened */
+        window.addEventListener("load", () => {
+            localStorage.setItem("newSchemes", "no");
+            dotSchemes.style.display = "none";
+        });
+
+        /* Render */
+        function renderSchemes(schemes) {
+            schemeListEl.innerHTML = "";
+
+            if (!schemes.length) {
+                schemeListEl.innerHTML = "<p>No schemes available</p>";
+                return;
+            }
+
+            schemes.forEach(s => {
+                schemeListEl.innerHTML += `
+                    <div class="card scheme-card">
+                        <h3>${s.title}</h3>
+                        <p>${s.description}</p>
+                        <p><b>Start:</b> ${s.start}</p>
+                        <p><b>End:</b> ${s.end}</p>
+                    </div>
+                `;
+            });
+        }
+
+        /* Fetch API */
+        function loadSchemes() {
+            fetch("/api/schemes")
+                .then(res => res.json())
+                .then(data => {
+                    allSchemes = data.schemes;
+                    renderSchemes(allSchemes);
+                })
+                .catch(err => console.error("Scheme load error:", err));
+        }
+        loadSchemes();
+
+        /* Search */
+        schemeSearch.addEventListener("keyup", () => {
+            const q = schemeSearch.value.toLowerCase();
+
+            const filtered = allSchemes.filter(s =>
+                s.title.toLowerCase().includes(q) ||
+                s.description.toLowerCase().includes(q)
+            );
+
+            renderSchemes(filtered);
+        });
+    </script>
+
+</body>
+</html>
