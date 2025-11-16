@@ -388,17 +388,22 @@
         <!-- Add Scheme -->
         <section class="card">
             <h2>Add Scheme</h2>
-            <form id="schemeForm">
+
+            <form id="schemeForm" enctype="multipart/form-data">
                 <input id="schemeTitle" placeholder="Title" required>
+
                 <textarea id="schemeDesc" placeholder="Description" required></textarea>
 
-                <label>Start:</label><input id="schemeStart" type="date" required>
-                <label>End:</label><input id="schemeEnd" type="date" required>
+                <!-- OPTIONAL FILE UPLOAD (PDF / DOC / DOCX / IMAGE) -->
+                <label>Upload File (Optional):</label>
+                <input type="file" id="schemeFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
 
                 <input id="schemePassword" type="password" placeholder="Admin Password" required>
+
                 <button type="submit">Add Scheme</button>
             </form>
         </section>
+
 
         <!-- Upload Image -->
         <section class="card">
@@ -794,22 +799,40 @@
 
         document.getElementById('schemeForm').addEventListener('submit', async e => {
             e.preventDefault();
-            if (document.getElementById('schemePassword').value !== ADMIN_PASSWORD) return alert("Incorrect password");
-            await fetch('/admin/schemes', {
+
+            // Password check
+            if (document.getElementById('schemePassword').value !== ADMIN_PASSWORD)
+                return alert("Incorrect password");
+
+            // Create FormData (required for file upload)
+            const fd = new FormData();
+            fd.append("title", document.getElementById('schemeTitle').value.trim());
+            fd.append("description", document.getElementById('schemeDesc').value.trim());
+
+            // Optional file handling
+            const fileInput = document.getElementById('schemeFile');
+            if (fileInput && fileInput.files.length > 0) {
+                fd.append("file", fileInput.files[0]);
+            }
+
+            // Make request (NO JSON HEADER)
+            const res = await fetch('/admin/schemes', {
                 method: 'POST',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    title: document.getElementById('schemeTitle').value.trim(),
-                    description: document.getElementById('schemeDesc').value.trim(),
-                    start: document.getElementById('schemeStart').value,
-                    end: document.getElementById('schemeEnd').value
-                })
+                body: fd
             });
 
+            const data = await res.json();
+            if (!data.success) {
+                console.error(data);
+                return alert("Upload failed: " + data.message);
+            }
+
+            // Reset form & refresh list
             e.target.reset();
             fetchData();
-            showSchemeAddPopup();   // popup added
+            showSchemeAddPopup();
         });
+
 
         document.getElementById('imageForm').addEventListener('submit', async e => {
             e.preventDefault();

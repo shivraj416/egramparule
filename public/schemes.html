@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Schemes - Gram Panchayat</title>
-    <!-- ✅ Favicon added -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
     <link rel="stylesheet" href="assets/css/style.css">
@@ -31,6 +30,7 @@
             background: linear-gradient(to right, #FF9933, #ffffff, #138808);
             padding: 12px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
         }
 
         .site-header .brand {
@@ -38,6 +38,19 @@
             font-weight: 700;
             color: #2c3e50;
             text-shadow: 0 0 4px #fff;
+        }
+
+        /* Left Corner Logo */
+        .site-header::before {
+            content: "";
+            background: url("assets/img/schemes.png") no-repeat center;
+            background-size: 80px;
+            position: absolute;
+            left: 20px;
+            top: 5px;
+            width: 80px;
+            height: 80px;
+            opacity: 0.95;
         }
 
         /* -------------------- NAVIGATION -------------------- */
@@ -89,27 +102,46 @@
             box-shadow: 0 0 6px #0C4A85;
         }
 
-        /* -------------------- CARD LIST -------------------- */
-        .cards .card {
+        /* -------------------- GOV SCHEME TABLE -------------------- */
+        .gov-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
             background: white;
-            border: 1px solid #cfd7df;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 18px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #0C4A85;
+            border: 1px solid #cdd5df;
+            font-size: 17px;
         }
 
-        .cards .card h3 {
-            margin: 0;
-            color: #08345c;
-            font-size: 20px;
-            font-weight: 700;
+        .gov-table th {
+            background: #0C4A85;
+            color: #fff;
+            padding: 12px;
+            border: 1px solid #b2c0ce;
         }
 
-        .cards .card p {
-            margin: 5px 0;
-            color: #333;
+        .gov-table td {
+            padding: 10px;
+            border: 1px solid #d0d6de;
+            vertical-align: top;
+        }
+
+        .gov-table tr:nth-child(even) {
+            background: #f2f7ff;
+        }
+
+        .gov-table tr:hover {
+            background: #e8f2ff;
+        }
+
+        .download-btn {
+            background: #0C4A85;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 5px;
         }
 
         /* -------------------- FOOTER -------------------- */
@@ -121,24 +153,8 @@
             margin-top: 30px;
             font-size: 15px;
         }
-
-        /* Left Corner Logo (schemes.png) */
-        .site-header::before {
-            content: "";
-            background: url("assets/img/schemes.png") no-repeat center;
-            background-size: 80px;
-            /* increased size */
-            position: absolute;
-            left: 20px;
-            top: 5px;
-            width: 80px;
-            /* box size updated */
-            height: 80px;
-            opacity: 0.95;
-        }
     </style>
 </head>
-
 
 
 <body>
@@ -169,9 +185,19 @@
 
         <input type="text" id="schemeSearch" class="search-box" placeholder="योजना शोधा…">
 
-        <div class="scheme-scroll-box">
-            <div id="schemeList" class="cards"></div>
-        </div>
+        <!-- NEW GOV STYLE TABLE -->
+        <table class="gov-table">
+            <thead>
+                <tr>
+                    <th>अनुक्रमांक</th>
+                    <th>योजनेचे नाव</th>
+                    <th>विवरण</th>
+                    <th>फाईल</th>
+                </tr>
+            </thead>
+            <tbody id="schemeTable"></tbody>
+        </table>
+
     </main>
 
     <footer class="site-footer">
@@ -182,13 +208,12 @@
 
     <script>
         const socket = io();
-        const schemeListEl = document.getElementById("schemeList");
+        const schemeTable = document.getElementById("schemeTable");
         const schemeSearch = document.getElementById("schemeSearch");
         const dotSchemes = document.getElementById("dotSchemes");
 
         let allSchemes = [];
 
-        /* Show dot if new */
         function showSchemeDot() {
             if (localStorage.getItem("newSchemes") === "yes") {
                 dotSchemes.style.display = "inline-block";
@@ -196,7 +221,6 @@
         }
         showSchemeDot();
 
-        /* Reload when admin adds new */
         socket.on("new-data", (data) => {
             if (data.type === "schemes") {
                 localStorage.setItem("newSchemes", "yes");
@@ -205,34 +229,59 @@
             }
         });
 
-        /* Clear dot when opened */
         window.addEventListener("load", () => {
             localStorage.setItem("newSchemes", "no");
             dotSchemes.style.display = "none";
         });
 
-        /* Render */
+        /* -------------------- RENDER TABLE -------------------- */
         function renderSchemes(schemes) {
-            schemeListEl.innerHTML = "";
+            schemeTable.innerHTML = "";
 
             if (!schemes.length) {
-                schemeListEl.innerHTML = "<p>No schemes available</p>";
+                schemeTable.innerHTML = `
+                    <tr><td colspan="4" style="text-align:center;">योजना उपलब्ध नाहीत</td></tr>`;
                 return;
             }
 
-            schemes.forEach(s => {
-                schemeListEl.innerHTML += `
-                    <div class="card scheme-card">
-                        <h3>${s.title}</h3>
-                        <p>${s.description}</p>
-                        <p><b>Start:</b> ${s.start}</p>
-                        <p><b>End:</b> ${s.end}</p>
-                    </div>
-                `;
+            schemes.forEach((s, i) => {
+                let fileHTML = "—";
+
+                if (s.fileUrl) {
+                    if (s.fileType === "pdf") {
+                        fileHTML = `
+            <a class="download-btn" href="${s.fileUrl}" download>
+                PDF डाउनलोड
+            </a>`;
+                    } else if (s.fileType === "doc") {
+                        fileHTML = `
+            <a class="download-btn" href="${s.fileUrl}" download>
+                दस्तऐवज डाउनलोड
+            </a>`;
+                    } else if (s.fileType === "image") {
+                        fileHTML = `
+            <img src="${s.fileUrl}" style="width:90px; border-radius:6px;" />
+            <a class="download-btn" href="${s.fileUrl}" download>डाउनलोड</a>`;
+                    } else {
+                        fileHTML = `
+            <a class="download-btn" href="${s.fileUrl}" download>
+                फाईल डाउनलोड
+            </a>`;
+                    }
+                }
+
+
+                schemeTable.innerHTML += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${s.title}</td>
+                        <td>${s.description}</td>
+                        <td>${fileHTML}</td>
+                    </tr>`;
             });
         }
 
-        /* Fetch API */
+        /* -------------------- FETCH -------------------- */
         function loadSchemes() {
             fetch("/api/schemes")
                 .then(res => res.json())
@@ -244,13 +293,14 @@
         }
         loadSchemes();
 
-        /* Search */
+        /* -------------------- SEARCH -------------------- */
         schemeSearch.addEventListener("keyup", () => {
             const q = schemeSearch.value.toLowerCase();
 
-            const filtered = allSchemes.filter(s =>
-                s.title.toLowerCase().includes(q) ||
-                s.description.toLowerCase().includes(q)
+            const filtered = allSchemes.filter(
+                s =>
+                    s.title.toLowerCase().includes(q) ||
+                    s.description.toLowerCase().includes(q)
             );
 
             renderSchemes(filtered);

@@ -140,37 +140,6 @@ app.delete("/admin/delete/member/:id", (req, res) => {
 });
 
 // ----------------------------------------------------------
-// SCHEMES ROUTES
-// ----------------------------------------------------------
-app.get("/api/schemes", (req, res) => {
-    res.json({ schemes: loadData().schemes });
-});
-
-app.post("/admin/schemes", (req, res) => {
-    const { title, description, start, end } = req.body;
-    if (!title || !description || !start || !end) {
-        return res.status(400).json({ status: "error", message: "Missing fields" });
-    }
-
-    const data = loadData();
-    const newScheme = { id: Date.now(), title, description, start, end };
-    data.schemes.push(newScheme);
-    saveData(data);
-
-    io.emit("new-data", { type: "schemes", scheme: newScheme });
-    res.json({ status: "success", scheme: newScheme });
-});
-
-app.delete("/admin/delete/scheme/:id", (req, res) => {
-    const data = loadData();
-    data.schemes = data.schemes.filter((s) => s.id != req.params.id);
-    saveData(data);
-
-    io.emit("new-data", { type: "schemes" });
-    res.json({ status: "success" });
-});
-
-// ----------------------------------------------------------
 // GALLERY ROUTES
 // ----------------------------------------------------------
 const upload = multer({ storage: multer.memoryStorage() });
@@ -405,6 +374,110 @@ app.get("/download/arj/:filename", (req, res) => {
         message: "File is stored on Cloudinary. Use the cloud URL from API."
     });
 });
+
+
+// =======================================================
+// ⭐ SCHEMES UPLOAD — FIXED FULL VERSION
+// =======================================================
+
+const uploadScheme = multer({ storage: multer.memoryStorage() });
+
+app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
+    try {
+        const { title, description } = req.body;
+
+        if (!title || !description) {
+            return res.status(400).json({ success: false, message: "Missing fields" });
+        }
+
+        let fileUrl = null;
+        let cloudinaryId = null;
+        let fileType = null;
+
+        if (req.file) {
+            // Upload to Cloudinary
+            const uploadResult = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                    {
+                        folder: "schemes_files",
+                        resource_type: "auto"
+                    },
+                    (err, result) => {
+                        if (err) reject(err);
+                        else resolve(result);
+                    }
+                ).end(req.file.buffer);
+            });
+
+            fileUrl = uploadResult.secure_url;
+            cloudinaryId = uploadResult.public_id;
+
+            // Normalize file type for frontend
+            const mime = req.file.mimetype;
+
+            if (mime === "application/pdf") fileType = "pdf";
+            else if (
+                mime === "application/msword" ||
+                mime === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ) fileType = "doc";
+            else if (mime.startsWith("image/")) fileType = "image";
+            else fileType = "other";
+        }
+
+        // Save to JSON
+        const data = loadData();
+        const newScheme = {
+            id: Date.now(),
+            title,
+            description,
+            fileUrl,
+            fileType,
+            cloudinaryId
+        };
+
+        if (!data.schemes) data.schemes = [];
+        data.schemes.push(newScheme);
+        saveData(data);
+
+        io.emit("new-data", { type: "schemes" });
+
+        return res.json({ success: true, scheme: newScheme });
+
+    } catch (err) {
+        console.error("SCHEME ERROR:", err);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+
+// DELETE scheme (delete Cloudinary file also)
+app.delete("/admin/delete/scheme/:id", async (req, res) => {
+    const id = req.params.id;
+
+    const data = loadData();
+    const item = data.schemes.find(s => s.id == id);
+
+    if (!item) {
+        return res.status(404).json({ success: false, message: "Scheme not found" });
+    }
+
+    // delete Cloudinary file if exists
+    if (item.cloudinaryId) {
+        try {
+            await cloudinary.uploader.destroy(item.cloudinaryId, { resource_type: "auto" });
+        } catch (err) {
+            console.error("Cloudinary delete error:", err);
+        }
+    }
+
+    data.schemes = data.schemes.filter(s => s.id != id);
+    saveData(data);
+
+    io.emit("new-data", { type: "schemes" });
+
+    res.json({ success: true });
+});
+
 
 // ----------------------------------------------------------
 // SOCKET.IO EVENTS
