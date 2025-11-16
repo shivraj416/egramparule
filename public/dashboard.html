@@ -29,12 +29,26 @@
         }
 
         /* ------------------------------------
-   HEADER - GOV INDIA LOOK
+   HEADER (Gov India + Logo)
 --------------------------------------*/
         .site-header {
             background: linear-gradient(to right, #FF9933, #ffffff, #138808);
             padding: 12px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        /* ⭐ LEFT CORNER LOGO (Responsive) */
+        .site-header::before {
+            content: "";
+            background: url("assets/img/admin.png") no-repeat center;
+            background-size: contain;
+            position: absolute;
+            left: 15px;
+            top: 8px;
+            width: 70px;
+            height: 70px;
+            opacity: 0.95;
         }
 
         .site-header .brand {
@@ -42,6 +56,30 @@
             font-weight: 700;
             color: #2c3e50;
             text-shadow: 0 0 4px #fff;
+        }
+
+        /* 📱 Mobile Responsive Fix */
+        @media (max-width: 480px) {
+            .site-header::before {
+                width: 42px;
+                height: 42px;
+                top: 8px;
+                left: 10px;
+            }
+
+            .site-header .brand {
+                font-size: 20px !important;
+                padding-left: 55px;
+                /* shift brand text */
+            }
+        }
+
+        /* 📱 Tablet Size */
+        @media (max-width: 768px) {
+            .site-header::before {
+                width: 55px;
+                height: 55px;
+            }
         }
 
         /* ------------------------------------
@@ -52,6 +90,7 @@
             font-weight: 600;
             padding: 10px 14px;
             text-decoration: none;
+            transition: 0.3s;
         }
 
         .nav a:hover {
@@ -91,7 +130,7 @@
         }
 
         /* ------------------------------------
-   INPUT + TEXTAREA (Official Style)
+   INPUT + TEXTAREA (Gov Style)
 --------------------------------------*/
         input,
         textarea,
@@ -131,7 +170,7 @@
         }
 
         /* ------------------------------------
-   CARDS FOR EXISTING DATA
+   EXISTING DATA CARDS
 --------------------------------------*/
         .cards .card {
             border-left: 5px solid #0C4A85;

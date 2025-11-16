@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
+        /* -------------------- NEW DOT -------------------- */
         .new-dot {
             width: 10px;
             height: 10px;
@@ -20,7 +21,7 @@
             margin-left: 4px;
         }
 
-        /* Lightbox */
+        /* -------------------- LIGHTBOX -------------------- */
         .lightbox {
             display: none;
             position: fixed;
@@ -28,7 +29,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 40, 0.88);
+            /* Govt dark blue */
             justify-content: center;
             align-items: center;
             z-index: 9999;
@@ -37,31 +39,33 @@
         .lightbox img {
             max-width: 90%;
             max-height: 90%;
-            border-radius: 8px;
+            border: 5px solid white;
+            border-radius: 12px;
+            box-shadow: 0 4px 40px rgba(0, 0, 0, 0.8);
         }
 
+        /* Close Button */
         .close-btn {
             position: absolute;
             top: 20px;
             right: 30px;
-            color: white;
             font-size: 45px;
-            font-weight: bold;
+            color: #fff;
             cursor: pointer;
             padding: 5px 15px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(12, 74, 133, 0.8);
+            /* Govt blue */
             border-radius: 8px;
         }
 
         .close-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(12, 74, 133, 1);
         }
 
-        /* ⭐ IMPORTANT FIX – MAKE IMAGES CLICKABLE */
+        /* Make images clickable */
         #gallery img {
             cursor: pointer !important;
             pointer-events: auto !important;
-            z-index: 10;
         }
 
         /* -------------------- GOVERNMENT BACKGROUND -------------------- */
@@ -70,9 +74,9 @@
             font-family: 'Noto Sans Devanagari', sans-serif;
         }
 
-        /* -------------------- HEADER (Tiranga + Govt Look) -------------------- */
+        /* -------------------- HEADER -------------------- */
         .site-header {
-            background: linear-gradient(to right, #FF9933, #ffffff, #138808);
+            background: linear-gradient(to right, #FF9933, white, #138808);
             padding: 12px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             position: relative;
@@ -85,7 +89,7 @@
             text-shadow: 0 0 4px #fff;
         }
 
-        /* -------------------- NAVIGATION -------------------- */
+        /* -------------------- NAV MENU -------------------- */
         .nav a {
             color: #2c3e50;
             font-weight: 600;
@@ -116,7 +120,7 @@
             margin-bottom: 10px;
         }
 
-        /* -------------------- DESCRIPTION TEXT -------------------- */
+        /* -------------------- DESCRIPTION BOX -------------------- */
         main.container p {
             background: white;
             padding: 12px;
@@ -128,13 +132,12 @@
             text-align: center;
         }
 
-        /* -------------------- GALLERY GRID (GOVERNMENT STYLE) -------------------- */
+        /* -------------------- GALLERY GRID -------------------- */
         .gallery-grid img {
             width: 100%;
             max-width: 240px;
             border-radius: 10px;
             border: 3px solid #0C4A85;
-            /* GOVT BLUE BORDER */
             margin: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             cursor: pointer;
@@ -143,30 +146,6 @@
 
         .gallery-grid img:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-        }
-
-        /* -------------------- LIGHTBOX GOVERNMENT THEME -------------------- */
-        .lightbox {
-            background: rgba(0, 0, 40, 0.88);
-            /* DARK GOVT BLUE */
-        }
-
-        .lightbox img {
-            border: 5px solid white;
-            border-radius: 12px;
-            box-shadow: 0 4px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        /* Close button style */
-        .close-btn {
-            background: rgba(12, 74, 133, 0.8);
-            /* #0C4A85 Govt Blue */
-            border-radius: 8px;
-        }
-
-        .close-btn:hover {
-            background: rgba(12, 74, 133, 1);
         }
 
         /* -------------------- FOOTER -------------------- */
@@ -175,23 +154,47 @@
             color: #fff;
             padding: 15px;
             text-align: center;
-            margin-top: 30px;
             font-size: 15px;
+            margin-top: 30px;
         }
 
-         /* Left Corner Logo (gallery.png) */
+        /* --------------------------------------------------
+   ⭐ RESPONSIVE LEFT CORNER LOGO (digital.png)
+   -------------------------------------------------- */
         .site-header::before {
             content: "";
             background: url("assets/img/digital.png") no-repeat center;
-            background-size: 80px;
-            /* increased size */
+            background-size: contain;
             position: absolute;
-            left: 20px;
-            top: 5px;
-            width: 80px;
-            /* box size updated */
-            height: 80px;
+            left: 12px;
+            top: 6px;
+            width: 60px;
+            height: 60px;
             opacity: 0.95;
+        }
+
+        /* 📱 Mobile Phones (All Android & iPhone) */
+        @media (max-width: 480px) {
+            .site-header::before {
+                width: 42px;
+                height: 42px;
+                left: 8px;
+                top: 6px;
+            }
+
+            .site-header .brand {
+                font-size: 20px;
+                padding-left: 55px;
+                /* Avoid overlap */
+            }
+        }
+
+        /* 📱 Tablets */
+        @media (max-width: 768px) {
+            .site-header::before {
+                width: 55px;
+                height: 55px;
+            }
         }
     </style>
 </head>
@@ -308,6 +311,13 @@
             if (e.target === e.currentTarget) {
                 document.getElementById("lightbox").style.display = "none";
             }
+        });
+
+        const navToggle = document.getElementById("navToggle4");
+        const mainNav = document.getElementById("mainNav4");
+
+        navToggle.addEventListener("click", () => {
+            mainNav.classList.toggle("open");
         });
     </script>
 

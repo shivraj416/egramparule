@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,16 +6,16 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Gram Panchayat - Home</title>
     <!-- ✅ Favicon added -->
-    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css" />
 
     <style>
         /* 🌄 FULL PAGE BACKGROUND IMAGE */
         body {
             margin: 0;
             padding: 0;
-            background: url("assets/img/bg.jpg") no-repeat center center fixed;
+            /*background: url("assets/img/bg.jpg") no-repeat center center fixed; */
             background-size: cover;
         }
 
@@ -79,26 +79,49 @@
 
         /* ---------------------- GOV HEADER (Tricolor) ---------------------- */
         .site-header {
-            background: linear-gradient(to right, #FF9933, white, #138808);
+            background: linear-gradient(to right, #ff9933, white, #138808);
             padding: 12px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             position: relative;
+            display: flex;
+            align-items: center;
         }
 
+        /* LEFT LOGO — Fully Responsive */
+        .site-header::before {
+            content: "";
+            background: url("assets/img/amrit.png") no-repeat center;
+            background-size: contain;
+            position: absolute;
+            left: 12px;
+            top: 5px;
+            width: 60px;
+            height: 60px;
+            opacity: 0.95;
+        }
+
+        /* BRAND TITLE */
         .site-header .brand {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 700;
             color: #2c3e50 !important;
             text-shadow: 0 0 4px #fff;
+            margin-left: 80px;
+            /* avoid overlap with logo */
         }
 
-        /* Nav Links */
+        /* NAV LINKS */
+        .nav {
+            margin-left: auto;
+        }
+
         .nav a {
             color: #2c3e50 !important;
             font-weight: 600;
             padding: 10px 16px;
             border-radius: 6px;
             transition: 0.3s;
+            text-decoration: none;
         }
 
         .nav a:hover {
@@ -106,95 +129,108 @@
         }
 
         .nav a.active {
-            background: #0C4A85;
+            background: #0c4a85;
             color: white !important;
-            text-shadow: none;
         }
 
-        /* ---------------------- PAGE SUBTITLE STYLING ---------------------- */
-        .map h3 {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 8px 12px;
-            border-radius: 6px;
-            width: fit-content;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
-        }
-
-        /* ---------------------- NOTICES BOX (Gov Style) ---------------------- */
-        .info-list h2 {
-            background: #0C4A85;
-            padding: 10px;
-            color: white !important;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Search Box */
-        .search-box {
-            width: 100%;
-            max-width: 350px;
-            display: block;
-            margin: 15px auto;
-            border-radius: 8px;
-            padding: 12px;
-            border: 1px solid #d1d9e0;
-        }
-
-        .search-box:focus {
-            border-color: #0C4A85;
-            box-shadow: 0 0 6px #0C4A85;
-        }
-
-        /* NOTICE CARDS (Govt White Card Style) */
-        .cards .card {
-            background: white;
-            padding: 15px;
-            border: 1px solid #cfd7df;
-            margin-bottom: 15px;
-            border-left: 5px solid #0C4A85;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .cards .card h3 {
-            margin: 0;
-            color: #08345c;
-        }
-
-        .cards .card p {
-            margin: 5px 0;
-            color: #333;
-        }
-
-        /* ---------------------- FOOTER ---------------------- */
-        .site-footer {
-            background: #0C4A85 !important;
-            color: #fff !important;
-            padding: 15px;
-            font-size: 15px;
-            margin-top: 40px;
-            border-top: 5px solid #08345c;
-        }
-
-         /* Left Corner Logo (schemes.png) */
-        .site-header::before {
-            content: "";
-            background: url("assets/img/amrit.png") no-repeat center;
-            background-size: 80px;
-            /* increased size */
+        /* MOBILE NAV TOGGLE */
+        .nav-toggle {
+            display: none;
             position: absolute;
-            left: 20px;
-            top: 5px;
-            width: 80px;
-            /* box size updated */
-            height: 80px;
-            opacity: 0.95;
+            right: 15px;
+            top: 15px;
+            font-size: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* ----------------------------------------------------- */
+        /* 📱 MOBILE RESPONSIVE FIX (ALL ANDROID PHONES) */
+        /* ----------------------------------------------------- */
+        @media (max-width: 480px) {
+
+            /* Smaller logo */
+            .site-header::before {
+                width: 42px;
+                height: 42px;
+                top: 6px;
+                left: 6px;
+            }
+
+            /* Smaller brand */
+            .site-header .brand {
+                font-size: 20px !important;
+                margin-left: 55px;
+                /* shift text so it doesn’t overlap logo */
+            }
+
+            /* Navbar hidden initially */
+            .nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: white;
+                padding: 10px 0;
+                border-top: 2px solid #08345c;
+            }
+
+            .nav a {
+                padding: 12px;
+                border-radius: 0;
+                text-align: center;
+                border-bottom: 1px solid #dcdcdc;
+            }
+
+            /* Toggle button visible */
+            .nav-toggle {
+                display: block;
+            }
+
+            /* Show nav when active */
+            .nav.open {
+                display: flex;
+            }
+        }
+
+        /* ----------------------------------------------------- */
+        /* 📱 TABLETS (600px – 768px) */
+        /* ----------------------------------------------------- */
+        @media (max-width: 768px) {
+            .site-header::before {
+                width: 50px;
+                height: 50px;
+            }
+
+            .site-header .brand {
+                font-size: 24px;
+                margin-left: 70px;
+            }
+
+            .nav a {
+                padding: 8px 12px;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: white;
+                padding: 10px 0;
+            }
+
+            .nav.open {
+                display: flex;
+            }
         }
     </style>
 </head>
 
 <body>
-
     <!-- DARK OVERLAY -->
     <div class="bg-overlay"></div>
 
@@ -206,7 +242,7 @@
             <nav id="mainNav" class="nav">
                 <a href="index.html" class="active">
                     Home
-                    <span id="dotHome" class="new-dot" style="display:none;"></span>
+                    <span id="dotHome" class="new-dot" style="display: none"></span>
                 </a>
                 <a href="about.html">About</a>
                 <a href="arj.html">अर्ज (नमुना)</a>
@@ -228,39 +264,38 @@
 
         <!-- LOCATION MAP -->
         <section class="map container">
-
             <h3 style="
-                font-size: 18px;
-                font-weight: 600;
-                margin-bottom: 10px;
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                color: #fff;
-                text-shadow: 0 0 6px #00eaff;
-            ">
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #fff;
+            text-shadow: 0 0 6px #00eaff;
+          ">
                 📍 परुळे (राजापूर, महाराष्ट्र)
             </h3>
 
             <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15379.051886766696!2d73.5179571!3d16.6390669!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcfa9271d6ae1f1%3A0x8b7e7a98e3c6d1e!2sHaral%2C%20Maharashtra%20416113!5e0!3m2!1sen!2sin!4v1731573140000!5m2!1sen!2sin"
-                width="100%" height="420" style="border:0;" allowfullscreen="" loading="lazy"
+                width="100%" height="420" style="border: 0" allowfullscreen="" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade">
             </iframe>
-
         </section>
 
         <!-- Notices Section -->
         <section class="info-list container">
-            <h2 style="color:white; text-shadow:0 0 6px #00eaff;">Notices & Info</h2>
+            <h2 style="color: white; text-shadow: 0 0 6px #00eaff">
+                Notices & Info
+            </h2>
 
-            <input type="text" id="noticeSearch" class="search-box" placeholder="🔍 नोटीस शोधा...">
+            <input type="text" id="noticeSearch" class="search-box" placeholder="🔍 नोटीस शोधा..." />
 
             <div class="info-scroll-box">
                 <div id="infoItems" class="cards"></div>
             </div>
         </section>
-
     </main>
 
     <footer class="site-footer">
@@ -273,9 +308,9 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        const infoContainer = document.getElementById('infoItems');
-        const searchInput = document.getElementById('noticeSearch');
-        const dotHome = document.getElementById('dotHome');
+        const infoContainer = document.getElementById("infoItems");
+        const searchInput = document.getElementById("noticeSearch");
+        const dotHome = document.getElementById("dotHome");
 
         let allNotices = [];
 
@@ -299,22 +334,22 @@
         });
 
         /* ---------------------------------------------
-           RENDER INFO WITH COLOR BADGES (FIXED)
-        ----------------------------------------------*/
+             RENDER INFO WITH COLOR BADGES (FIXED)
+          ----------------------------------------------*/
         function renderInfo(items) {
-            infoContainer.innerHTML = '';
+            infoContainer.innerHTML = "";
             if (!Array.isArray(items)) return;
 
-            items.forEach(item => {
+            items.forEach((item) => {
                 const noticeType = item.type || "General";
 
                 // ⭐ Color selection
-                let tagClass = "tag-general";     // blue
+                let tagClass = "tag-general"; // blue
                 if (noticeType === "Important") tagClass = "tag-important"; // red
-                if (noticeType === "Urgent") tagClass = "tag-urgent";       // orange
+                if (noticeType === "Urgent") tagClass = "tag-urgent"; // orange
 
-                const card = document.createElement('div');
-                card.className = 'card info-card';
+                const card = document.createElement("div");
+                card.className = "card info-card";
 
                 card.innerHTML = `
                 <span class="notice-tag ${tagClass}">${noticeType}</span>
@@ -327,23 +362,23 @@
         }
 
         /* ---------------------------------------------
-           FETCH INITIAL DATA
-        ----------------------------------------------*/
-        fetch('/api/info')
-            .then(res => res.json())
-            .then(data => {
+             FETCH INITIAL DATA
+          ----------------------------------------------*/
+        fetch("/api/info")
+            .then((res) => res.json())
+            .then((data) => {
                 data.info.sort((a, b) => b.id - a.id);
                 allNotices = data.info;
                 renderInfo(allNotices);
             });
 
         /* ---------------------------------------------
-           LIVE UPDATE ON SOCKET EVENT
-        ----------------------------------------------*/
-        socket.on('new-data', () => {
-            fetch('/api/info')
-                .then(res => res.json())
-                .then(data => {
+             LIVE UPDATE ON SOCKET EVENT
+          ----------------------------------------------*/
+        socket.on("new-data", () => {
+            fetch("/api/info")
+                .then((res) => res.json())
+                .then((data) => {
                     data.info.sort((a, b) => b.id - a.id);
                     allNotices = data.info;
                     renderInfo(allNotices);
@@ -351,27 +386,34 @@
         });
 
         /* ---------------------------------------------
-            SEARCH FILTER
-        ----------------------------------------------*/
+              SEARCH FILTER
+          ----------------------------------------------*/
         searchInput.addEventListener("keyup", () => {
             const q = searchInput.value.toLowerCase();
-            const filtered = allNotices.filter(n =>
-                n.title.toLowerCase().includes(q) ||
-                (n.description || n.desc || "").toLowerCase().includes(q) ||
-                (n.type || "General").toLowerCase().includes(q)
+            const filtered = allNotices.filter(
+                (n) =>
+                    n.title.toLowerCase().includes(q) ||
+                    (n.description || n.desc || "").toLowerCase().includes(q) ||
+                    (n.type || "General").toLowerCase().includes(q)
             );
             renderInfo(filtered);
         });
 
         const currentPage = location.pathname.split("/").pop();
 
-        document.querySelectorAll("#mainNav a").forEach(link => {
+        document.querySelectorAll("#mainNav a").forEach((link) => {
             if (link.getAttribute("href") === currentPage) {
                 link.classList.add("active");
             }
         });
-    </script>
 
+        const navToggle = document.getElementById("navToggle");
+        const mainNav = document.getElementById("mainNav");
+
+        navToggle.addEventListener("click", () => {
+            mainNav.classList.toggle("open");
+        });
+    </script>
 </body>
 
 </html>

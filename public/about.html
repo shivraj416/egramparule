@@ -15,7 +15,7 @@
         body {
             margin: 0;
             padding: 0;
-            background: url("assets/img/bg.jpg") no-repeat center center fixed;
+            /*background: url("assets/img/bg.jpg") no-repeat center center fixed; */
             background-size: cover;
         }
 
@@ -95,13 +95,31 @@
             padding: 12px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             position: relative;
+            display: flex;
+            align-items: center;
         }
 
+        /* LEFT LOGO — Fully Responsive */
+        .site-header::before {
+            content: "";
+            background: url("assets/img/gram.png") no-repeat center;
+            background-size: contain;
+            position: absolute;
+            left: 12px;
+            top: 7px;
+            width: 65px;
+            height: 65px;
+            opacity: 0.95;
+        }
+
+        /* BRAND TITLE */
         .site-header .brand {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 700;
             color: #2c3e50 !important;
             text-shadow: 0 0 4px #fff;
+            margin-left: 85px;
+            /* shifted so no overlap with logo */
         }
 
         /* NAV LINKS */
@@ -111,6 +129,7 @@
             padding: 10px 16px;
             border-radius: 6px;
             transition: 0.3s;
+            text-decoration: none;
         }
 
         .nav a:hover {
@@ -122,73 +141,99 @@
             color: white !important;
         }
 
-        /* ---------------------- ABOUT PAGE TITLE (Gov Blue Box) ---------------------- */
-        h1 {
-            background: #0C4A85;
-            padding: 12px;
-            color: white !important;
-            border-radius: 10px;
-            width: fit-content;
-            margin: 25px auto;
-            text-shadow: none !important;
-            animation: none !important;
-        }
-
-        /* ---------------------- ABOUT CONTENT GOV CARD ---------------------- */
-        #aboutContent {
-            background: #ffffff;
-            border: 1px solid #d6dce3;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Section Title */
-        #aboutContent h2 {
-            background: #0C4A85;
-            padding: 10px;
-            border-radius: 6px;
-            color: white !important;
-            border-left: 6px solid #052f5f;
-        }
-
-        /* Subheadings */
-        #aboutContent h3 {
-            font-size: 22px;
-            color: #0C4A85;
-            font-weight: 700;
-            border-left: 5px solid #0C4A85;
-            padding-left: 10px;
-        }
-
-        /* Paragraphs */
-        #aboutContent p {
-            font-size: 17px;
-            color: #333;
-            line-height: 1.7;
-        }
-
-        /* ---------------------- FOOTER ---------------------- */
-        .site-footer {
-            background: #0C4A85 !important;
-            color: white !important;
-            border-top: 5px solid #08345c;
-            padding: 15px;
-        }
-
-        /* Left Corner Logo (schemes.png) */
-        .site-header::before {
-            content: "";
-            background: url("assets/img/gram.png") no-repeat center;
-            background-size: 80px;
-            /* increased size */
+        /* MOBILE NAV TOGGLE */
+        .nav-toggle {
+            display: none;
             position: absolute;
-            left: 20px;
-            top: 5px;
-            width: 80px;
-            /* box size updated */
-            height: 80px;
-            opacity: 0.95;
+            right: 15px;
+            top: 15px;
+            font-size: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* ---------------------------------------------- */
+        /* 📱 MOBILE RESPONSIVE FIX (ALL ANDROID PHONES) */
+        /* ---------------------------------------------- */
+        @media (max-width: 480px) {
+
+            /* Smaller logo */
+            .site-header::before {
+                width: 42px;
+                height: 42px;
+                top: 5px;
+                left: 6px;
+            }
+
+            /* Smaller brand */
+            .site-header .brand {
+                font-size: 20px !important;
+                margin-left: 55px;
+                /* prevent overlap */
+            }
+
+            /* Hide nav at start */
+            .nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: white;
+                padding: 10px 0;
+                border-top: 2px solid #08345c;
+            }
+
+            .nav a {
+                padding: 12px;
+                border-radius: 0;
+                text-align: center;
+                border-bottom: 1px solid #ddd;
+            }
+
+            /* Show toggle button */
+            .nav-toggle {
+                display: block;
+            }
+
+            /* When toggled */
+            .nav.open {
+                display: flex;
+            }
+        }
+
+        /* ---------------------------------------------- */
+        /* 📱 TABLETS (480px – 768px) */
+        /* ---------------------------------------------- */
+        @media (max-width: 768px) {
+
+            .site-header::before {
+                width: 50px;
+                height: 50px;
+            }
+
+            .site-header .brand {
+                font-size: 22px;
+                margin-left: 70px;
+            }
+
+            .nav a {
+                padding: 10px 14px;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: white;
+            }
+
+            .nav.open {
+                display: flex;
+            }
         }
     </style>
 </head>
@@ -201,8 +246,8 @@
     <header class="site-header">
         <div class="container">
             <a class="brand" href="index.html">ग्रामपंचायत परुळे</a>
-            <button id="navToggle2" class="nav-toggle">☰</button>
-            <nav id="mainNav2" class="nav">
+            <button id="navToggle" class="nav-toggle">☰</button>
+            <nav id="mainNav" class="nav">
                 <a href="index.html">Home</a>
                 <a href="arj.html">अर्ज (नमुना)</a>
                 <a href="about.html" class="active">About</a>
@@ -265,6 +310,17 @@
                 })
                 .catch(() => { });
         });
+
+        // Correct navbar IDs
+        const navToggle = document.getElementById("navToggle");
+        const mainNav = document.getElementById("mainNav");
+
+        // SAFE check to avoid errors
+        if (navToggle && mainNav) {
+            navToggle.addEventListener("click", () => {
+                mainNav.classList.toggle("open");
+            });
+        }
     </script>
 
     <script src="assets/js/script.js"></script>

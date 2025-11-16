@@ -25,7 +25,7 @@
             font-family: 'Noto Sans Devanagari', sans-serif;
         }
 
-        /* -------------------- HEADER (Government Tricolor Look) -------------------- */
+        /* -------------------- HEADER (Tricolor + Logo) -------------------- */
         .site-header {
             background: linear-gradient(to right, #FF9933, #ffffff, #138808);
             padding: 12px 0;
@@ -33,24 +33,48 @@
             position: relative;
         }
 
+        /* -------------------- LEFT CORNER LOGO (Responsive) -------------------- */
+        .site-header::before {
+            content: "";
+            background: url("assets/img/schemes.png") no-repeat center;
+            background-size: contain;
+            position: absolute;
+            left: 18px;
+            top: 6px;
+            width: 75px;
+            height: 75px;
+            opacity: 0.95;
+        }
+
+        /* 📱 Mobile Phones Fix */
+        @media (max-width: 480px) {
+            .site-header::before {
+                width: 42px;
+                height: 42px;
+                left: 10px;
+                top: 8px;
+            }
+
+            .site-header .brand {
+                font-size: 20px !important;
+                padding-left: 58px;
+                /* shift text for mobile view */
+            }
+        }
+
+        /* 📱 Small Tablets */
+        @media (max-width: 768px) {
+            .site-header::before {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
         .site-header .brand {
             font-size: 28px;
             font-weight: 700;
             color: #2c3e50;
             text-shadow: 0 0 4px #fff;
-        }
-
-        /* Left Corner Logo */
-        .site-header::before {
-            content: "";
-            background: url("assets/img/schemes.png") no-repeat center;
-            background-size: 80px;
-            position: absolute;
-            left: 20px;
-            top: 5px;
-            width: 80px;
-            height: 80px;
-            opacity: 0.95;
         }
 
         /* -------------------- NAVIGATION -------------------- */
@@ -74,7 +98,7 @@
             padding: 10px 16px;
         }
 
-        /* -------------------- PAGE TITLE -------------------- */
+        /* -------------------- SCHEMES PAGE TITLE -------------------- */
         main.container h1 {
             text-align: center;
             background: #0C4A85;
@@ -133,6 +157,7 @@
             background: #e8f2ff;
         }
 
+        /* -------------------- DOWNLOAD BUTTON -------------------- */
         .download-btn {
             background: #0C4A85;
             color: white;
@@ -304,6 +329,13 @@
             );
 
             renderSchemes(filtered);
+        });
+
+        const navToggle = document.getElementById("navToggle5");
+        const mainNav = document.getElementById("mainNav5");
+
+        navToggle.addEventListener("click", () => {
+            mainNav.classList.toggle("open");
         });
     </script>
 
