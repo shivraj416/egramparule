@@ -437,22 +437,29 @@ app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
     }
 });
 
-// Delete scheme
+// DELETE scheme (SAFE VERSION)
 app.delete("/admin/delete/scheme/:id", async (req, res) => {
     const id = req.params.id;
     const data = loadData();
 
     const item = data.schemes.find(s => s.id == id);
-    if (!item)
+    if (!item) {
         return res.status(404).json({ success: false, message: "Scheme not found" });
+    }
 
     try {
-        if (item.cloudinaryId) {
-            await cloudinary.uploader.destroy(item.cloudinaryId, {
-                resource_type: "auto"
-            });
+        // 🔥 SAFE CLOUDINARY DELETE (only if valid ID exists)
+        if (item.cloudinaryId && typeof item.cloudinaryId === "string" && item.cloudinaryId.trim() !== "") {
+            try {
+                await cloudinary.uploader.destroy(item.cloudinaryId, { resource_type: "auto" });
+            } catch (cloudErr) {
+                console.error("Cloudinary delete error:", cloudErr);
+            }
+        } else {
+            console.log("No cloudinaryId → skipping cloud delete");
         }
 
+        // 🔥 Remove from JSON DB
         data.schemes = data.schemes.filter(s => s.id != id);
         saveData(data);
 
@@ -462,7 +469,7 @@ app.delete("/admin/delete/scheme/:id", async (req, res) => {
 
     } catch (err) {
         console.error("SCHEME DELETE ERROR:", err);
-        return res.status(500).json({ success: false, message: "Cloudinary delete failed" });
+        return res.status(500).json({ success: false, message: "Server error" });
     }
 });
 
