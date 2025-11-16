@@ -437,29 +437,45 @@ app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
     }
 });
 
-// DELETE scheme (SAFE VERSION)
+// =======================================================
+// DELETE scheme (SAFE + CORRECT RESOURCE TYPE)
+// =======================================================
 app.delete("/admin/delete/scheme/:id", async (req, res) => {
     const id = req.params.id;
     const data = loadData();
 
     const item = data.schemes.find(s => s.id == id);
+
     if (!item) {
         return res.status(404).json({ success: false, message: "Scheme not found" });
     }
 
     try {
-        // 🔥 SAFE CLOUDINARY DELETE (only if valid ID exists)
+        // ------------------------------
+        // 🔥 SAFE CLOUDINARY DELETE
+        // ------------------------------
         if (item.cloudinaryId && typeof item.cloudinaryId === "string" && item.cloudinaryId.trim() !== "") {
+
+            // Determine correct Cloudinary resource type
+            let rType = "raw";  // default for pdf, doc, docx
+
+            if (item.fileType === "image") rType = "image";
+
             try {
-                await cloudinary.uploader.destroy(item.cloudinaryId, { resource_type: "auto" });
+                await cloudinary.uploader.destroy(item.cloudinaryId, {
+                    resource_type: rType
+                });
             } catch (cloudErr) {
                 console.error("Cloudinary delete error:", cloudErr);
             }
+
         } else {
-            console.log("No cloudinaryId → skipping cloud delete");
+            console.log("No cloudinaryId — skipping Cloudinary delete.");
         }
 
-        // 🔥 Remove from JSON DB
+        // ------------------------------
+        // 🔥 REMOVE FROM JSON
+        // ------------------------------
         data.schemes = data.schemes.filter(s => s.id != id);
         saveData(data);
 
