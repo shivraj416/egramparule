@@ -25,56 +25,76 @@
             font-family: 'Noto Sans Devanagari', sans-serif;
         }
 
-        /* -------------------- HEADER (Tricolor + Logo) -------------------- */
+        /* -------------------- GOV HEADER -------------------- */
         .site-header {
             background: linear-gradient(to right, #FF9933, #ffffff, #138808);
             padding: 12px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             position: relative;
+
+            /* 🔥 SPACE RESERVED FOR LOGO (Important) */
+            padding-left: 100px;
+            display: flex;
+            align-items: center;
         }
 
-        /* -------------------- LEFT CORNER LOGO (Responsive) -------------------- */
+        /* -------------------- RESPONSIVE LEFT LOGO -------------------- */
         .site-header::before {
             content: "";
             background: url("assets/img/schemes.png") no-repeat center;
             background-size: contain;
             position: absolute;
-            left: 18px;
-            top: 6px;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             width: 75px;
             height: 75px;
             opacity: 0.95;
         }
 
-        /* 📱 Mobile Phones Fix */
-        @media (max-width: 480px) {
-            .site-header::before {
-                width: 42px;
-                height: 42px;
-                left: 10px;
-                top: 8px;
-            }
-
-            .site-header .brand {
-                font-size: 20px !important;
-                padding-left: 58px;
-                /* shift text for mobile view */
-            }
-        }
-
-        /* 📱 Small Tablets */
-        @media (max-width: 768px) {
-            .site-header::before {
-                width: 60px;
-                height: 60px;
-            }
-        }
-
+        /* BRAND NAME */
         .site-header .brand {
             font-size: 28px;
             font-weight: 700;
             color: #2c3e50;
             text-shadow: 0 0 4px #fff;
+            white-space: nowrap;
+        }
+
+        /* 📱 MOBILE PHONES (All Android & iPhone) */
+        @media (max-width: 480px) {
+
+            .site-header {
+                padding-left: 65px;
+                /* reduce space on mobile */
+            }
+
+            .site-header::before {
+                width: 42px;
+                height: 42px;
+                left: 12px;
+            }
+
+            .site-header .brand {
+                font-size: 20px !important;
+            }
+        }
+
+        /* 📱 TABLETS */
+        @media (max-width: 768px) {
+
+            .site-header {
+                padding-left: 80px;
+            }
+
+            .site-header::before {
+                width: 55px;
+                height: 55px;
+            }
+
+            .site-header .brand {
+                font-size: 24px;
+            }
         }
 
         /* -------------------- NAVIGATION -------------------- */
@@ -178,32 +198,88 @@
             margin-top: 30px;
             font-size: 15px;
         }
+
+        /* Flex alignment for header */
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Hide nav-toggle on large screens */
+        .nav-toggle {
+            display: none;
+            font-size: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #2c3e50;
+        }
+
+        /* Default nav style */
+        .nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* ---------- MOBILE RESPONSIVE MENU ---------- */
+        @media (max-width: 768px) {
+
+            .nav-toggle {
+                display: block;
+                /* show menu icon */
+            }
+
+            .nav {
+                display: none;
+                /* hide menu initially */
+                flex-direction: column;
+                width: 100%;
+                background: white;
+                padding: 15px;
+                margin-top: 10px;
+                border-top: 2px solid #ccc;
+            }
+
+            .nav.open {
+                display: flex;
+                /* show menu when toggled */
+            }
+
+            .nav a {
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+            }
+        }
     </style>
 </head>
 
 
 <body>
     <header class="site-header">
-        <div class="container">
+        <div class="container header-flex">
+
             <a class="brand" href="index.html">ग्रामपंचायत परुळे</a>
+
             <button id="navToggle" class="nav-toggle">☰</button>
+
             <nav id="mainNav" class="nav">
                 <a href="index.html">Home</a>
                 <a href="arj.html">अर्ज (नमुना)</a>
                 <a href="about.html">About</a>
                 <a href="members.html">Members</a>
                 <a href="gallery.html">Gallery</a>
-
                 <a href="schemes.html" class="active">
-                    Schemes
-                    <span id="dotSchemes" class="new-dot" style="display:none;"></span>
+                    Schemes <span id="dotSchemes" class="new-dot" style="display:none;"></span>
                 </a>
-
                 <a href="contact.html">Contact</a>
                 <a href="login.html" class="cta">Dashboard</a>
             </nav>
+
         </div>
     </header>
+
+
 
     <main class="container">
         <h1>शासकीय योजना</h1>

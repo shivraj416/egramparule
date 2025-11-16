@@ -74,12 +74,16 @@
             font-family: 'Noto Sans Devanagari', sans-serif;
         }
 
-        /* -------------------- HEADER -------------------- */
+        /* -------------------- GOV HEADER -------------------- */
         .site-header {
             background: linear-gradient(to right, #FF9933, white, #138808);
             padding: 12px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 90px;
+            /* 🔥 space for logo */
         }
 
         .site-header .brand {
@@ -158,42 +162,63 @@
             margin-top: 30px;
         }
 
-        /* --------------------------------------------------
-   ⭐ RESPONSIVE LEFT CORNER LOGO (digital.png)
-   -------------------------------------------------- */
+        /* ⭐ Perfect Responsive Logo FIX */
         .site-header::before {
             content: "";
             background: url("assets/img/digital.png") no-repeat center;
             background-size: contain;
             position: absolute;
-            left: 12px;
-            top: 6px;
-            width: 60px;
-            height: 60px;
+            left: 15px;
+            /* always left */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            height: 70px;
             opacity: 0.95;
         }
 
-        /* 📱 Mobile Phones (All Android & iPhone) */
+        /* BRAND TEXT */
+        .site-header .brand {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            text-shadow: 0 0 4px #fff;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        /* 📱 Mobile Phones (All Android + iPhone) */
         @media (max-width: 480px) {
+
+            .site-header {
+                padding-left: 60px;
+                /* reduce space for small screens */
+            }
+
             .site-header::before {
-                width: 42px;
-                height: 42px;
-                left: 8px;
-                top: 6px;
+                width: 40px;
+                height: 40px;
+                left: 10px;
             }
 
             .site-header .brand {
-                font-size: 20px;
-                padding-left: 55px;
-                /* Avoid overlap */
+                font-size: 20px !important;
             }
         }
 
         /* 📱 Tablets */
         @media (max-width: 768px) {
+            .site-header {
+                padding-left: 75px;
+            }
+
             .site-header::before {
                 width: 55px;
                 height: 55px;
+            }
+
+            .site-header .brand {
+                font-size: 24px;
             }
         }
     </style>
