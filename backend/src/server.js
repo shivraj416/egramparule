@@ -1,12 +1,16 @@
 // server.js
-require("dotenv").config();
+const path = require("path");       // <-- LOAD PATH FIRST
+require("dotenv").config({
+    path: path.join(__dirname, "..", ".env")
+});
+
 const express = require("express");
-const path = require("path");
 const http = require("http");
 const { Server } = require("socket.io");
 const multer = require("multer");
 const fs = require("fs");
 const cors = require("cors");
+
 
 const app = express();
 const server = http.createServer(app);
@@ -259,99 +263,91 @@ ${message}
         res.json({ success: false, error: err.message });
     }
 });
-
 // =======================================================
-// ⭐ CLOUDINARY SETUP (FOR RENDER + LOCALHOST)
+// ⭐ CLOUDINARY SETUP
 // =======================================================
 const cloudinary = require("cloudinary").v2;
 
-// Load environment variables
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Use memory storage (files saved in RAM, then uploaded)
+console.log("CLOUDINARY ENV CHECK:", {
+    CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    API_KEY: process.env.CLOUDINARY_API_KEY,
+    API_SECRET: process.env.CLOUDINARY_API_SECRET ? "LOADED" : "MISSING"
+});
+
+
+
+// =======================================================
+// ⭐ ARJ UPLOAD
+// =======================================================
 const uploadArj = multer({ storage: multer.memoryStorage() });
 
-
-// =======================================================
-// ⭐ GET ALL ARJ
-// =======================================================
+// GET all ARJs
 app.get("/api/arj", (req, res) => {
     res.json({ arj: loadData().arj || [] });
 });
 
-
-// =======================================================
-// ⭐ UPLOAD ARJ (PDF/DOCX/JPG/PNG SUPPORT)
-// =======================================================
+// Upload ARJ
 app.post("/admin/arj", uploadArj.single("file"), async (req, res) => {
     const { title } = req.body;
+
     if (!title || !req.file) {
         return res.json({ success: false, message: "Missing fields" });
     }
 
     try {
-        // Upload file buffer to Cloudinary
-        const uploadStream = cloudinary.uploader.upload_stream(
-            {
-                folder: "arj_files",
-                resource_type: "raw"  // IMPORTANT for PDF, DOC, DOCX
-            },
-            (error, result) => {
-                if (error) {
-                    console.error(error);
-                    return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
+        const uploadResult = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+                {
+                    folder: "arj_files",
+                    resource_type: "raw"
+                },
+                (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
                 }
+            ).end(req.file.buffer);
+        });
 
-                // Save in data.json
-                const data = loadData();
-                const newFile = {
-                    id: Date.now(),
-                    title,
-                    filename: result.public_id,  // needed for deletion
-                    url: result.secure_url       // cloudinary file link
-                };
+        const data = loadData();
+        const newArj = {
+            id: Date.now(),
+            title,
+            filename: uploadResult.public_id,
+            url: uploadResult.secure_url
+        };
 
-                if (!data.arj) data.arj = [];
-                data.arj.push(newFile);
-                saveData(data);
+        if (!data.arj) data.arj = [];
+        data.arj.push(newArj);
+        saveData(data);
 
-                io.emit("new-data", { type: "arj" });
+        io.emit("new-data", { type: "arj" });
 
-                res.json({ success: true, file: newFile });
-            }
-        );
+        return res.json({ success: true, file: newArj });
 
-        // Pipe file buffer to Cloudinary
-        uploadStream.end(req.file.buffer);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Upload error" });
+    } catch (err) {
+        console.error("ARJ UPLOAD ERROR:", err);
+        return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
     }
 });
 
-
-// =======================================================
-// ⭐ DELETE ARJ (DELETE FROM CLOUDINARY + JSON)
-// =======================================================
+// Delete ARJ
 app.delete("/admin/delete/arj/:id", async (req, res) => {
     const id = req.params.id;
     const data = loadData();
 
     const item = data.arj.find(a => a.id == id);
-    if (!item) {
+    if (!item)
         return res.status(404).json({ success: false, message: "ARJ not found" });
-    }
 
     try {
-        // Delete from Cloudinary
         await cloudinary.uploader.destroy(item.filename, { resource_type: "raw" });
 
-        // Remove from JSON
         data.arj = data.arj.filter(a => a.id != id);
         saveData(data);
 
@@ -359,43 +355,37 @@ app.delete("/admin/delete/arj/:id", async (req, res) => {
 
         res.json({ success: true });
 
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error("ARJ DELETE ERROR:", err);
         res.status(500).json({ success: false, message: "Cloudinary delete failed" });
     }
 });
 
 
 // =======================================================
-// ⭐ DOWNLOAD ARJ (NOT NEEDED BUT SAFE FALLBACK)
+// ⭐ SCHEMES — FULL CLOUDINARY VERSION
 // =======================================================
-app.get("/download/arj/:filename", (req, res) => {
-    return res.json({
-        message: "File is stored on Cloudinary. Use the cloud URL from API."
-    });
-});
-
-
-// =======================================================
-// ⭐ SCHEMES UPLOAD — FIXED FULL VERSION
-// =======================================================
-
 const uploadScheme = multer({ storage: multer.memoryStorage() });
 
+// GET all schemes
+app.get("/api/schemes", (req, res) => {
+    const data = loadData();
+    res.json({ schemes: data.schemes || [] });
+});
+
+// Upload scheme
 app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
     try {
         const { title, description } = req.body;
 
-        if (!title || !description) {
+        if (!title || !description)
             return res.status(400).json({ success: false, message: "Missing fields" });
-        }
 
         let fileUrl = null;
         let cloudinaryId = null;
         let fileType = null;
 
         if (req.file) {
-            // Upload to Cloudinary
             const uploadResult = await new Promise((resolve, reject) => {
                 cloudinary.uploader.upload_stream(
                     {
@@ -412,19 +402,17 @@ app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
             fileUrl = uploadResult.secure_url;
             cloudinaryId = uploadResult.public_id;
 
-            // Normalize file type for frontend
             const mime = req.file.mimetype;
-
             if (mime === "application/pdf") fileType = "pdf";
             else if (
                 mime === "application/msword" ||
                 mime === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ) fileType = "doc";
+            )
+                fileType = "doc";
             else if (mime.startsWith("image/")) fileType = "image";
             else fileType = "other";
         }
 
-        // Save to JSON
         const data = loadData();
         const newScheme = {
             id: Date.now(),
@@ -445,37 +433,37 @@ app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
 
     } catch (err) {
         console.error("SCHEME ERROR:", err);
-        return res.status(500).json({ success: false, message: "Server error" });
+        return res.status(500).json({ success: false, message: "Cloudinary upload failed" });
     }
 });
 
-
-// DELETE scheme (delete Cloudinary file also)
+// Delete scheme
 app.delete("/admin/delete/scheme/:id", async (req, res) => {
     const id = req.params.id;
-
     const data = loadData();
+
     const item = data.schemes.find(s => s.id == id);
-
-    if (!item) {
+    if (!item)
         return res.status(404).json({ success: false, message: "Scheme not found" });
-    }
 
-    // delete Cloudinary file if exists
-    if (item.cloudinaryId) {
-        try {
-            await cloudinary.uploader.destroy(item.cloudinaryId, { resource_type: "auto" });
-        } catch (err) {
-            console.error("Cloudinary delete error:", err);
+    try {
+        if (item.cloudinaryId) {
+            await cloudinary.uploader.destroy(item.cloudinaryId, {
+                resource_type: "auto"
+            });
         }
+
+        data.schemes = data.schemes.filter(s => s.id != id);
+        saveData(data);
+
+        io.emit("new-data", { type: "schemes" });
+
+        return res.json({ success: true });
+
+    } catch (err) {
+        console.error("SCHEME DELETE ERROR:", err);
+        return res.status(500).json({ success: false, message: "Cloudinary delete failed" });
     }
-
-    data.schemes = data.schemes.filter(s => s.id != id);
-    saveData(data);
-
-    io.emit("new-data", { type: "schemes" });
-
-    res.json({ success: true });
 });
 
 
