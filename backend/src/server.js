@@ -13,6 +13,8 @@ const cors = require("cors");
 
 
 const app = express();
+const compression = require("compression");
+app.use(compression());
 const server = http.createServer(app);
 
 // SOCKET.IO with CORS (Netlify + Render)
@@ -30,7 +32,12 @@ const port = process.env.PORT || 8800;
 // ----------------------------------------------------------
 const ROOT_DIR = path.join(__dirname, "..", "..");
 const PUBLIC_PATH = path.join(ROOT_DIR, "public");
+let CACHE = null;
+let CACHE_TIME = 0;
+const CACHE_TTL = 4000; // 4 seconds cache
 const DATA_FILE = path.join(ROOT_DIR, "data.json");
+
+
 
 // ----------------------------------------------------------
 // MIDDLEWARE
@@ -38,7 +45,7 @@ const DATA_FILE = path.join(ROOT_DIR, "data.json");
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(PUBLIC_PATH));
+app.use(express.static(PUBLIC_PATH, { maxAge: "1d" }));
 
 // ----------------------------------------------------------
 // STATIC PAGE ROUTES
@@ -63,15 +70,30 @@ pages.forEach((page) => {
 // DATA FUNCTIONS
 // ----------------------------------------------------------
 function loadData() {
-    if (!fs.existsSync(DATA_FILE)) {
-        return { info: [], members: [], schemes: [], images: [], contact: [] };
+    const now = Date.now();
+
+    // return cached data (fast)
+    if (CACHE && now - CACHE_TIME < CACHE_TTL) {
+        return CACHE;
     }
-    return JSON.parse(fs.readFileSync(DATA_FILE));
+
+    // read from file (slow)
+    if (!fs.existsSync(DATA_FILE)) {
+        CACHE = { info: [], members: [], schemes: [], images: [], contact: [], arj: [] };
+    } else {
+        CACHE = JSON.parse(fs.readFileSync(DATA_FILE));
+    }
+
+    CACHE_TIME = now;
+    return CACHE;
 }
 
 function saveData(data) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+    CACHE = data; // update cache
+    CACHE_TIME = Date.now();
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2)); // write in background
 }
+
 
 // ----------------------------------------------------------
 // INFO ROUTES
