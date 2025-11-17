@@ -21,8 +21,8 @@
         }
 
         /* ------------------------------------
-   GOVERNMENT STYLE BACKGROUND
---------------------------------------*/
+            GOVERNMENT STYLE BACKGROUND
+        --------------------------------------*/
         body {
             background-color: #eef2f5;
             font-family: 'Noto Sans Devanagari', sans-serif;
@@ -98,8 +98,8 @@
         }
 
         /* ------------------------------------
-   NAV STYLE
---------------------------------------*/
+            NAV STYLE
+        --------------------------------------*/
         .nav a {
             color: #2c3e50;
             font-weight: 600;
@@ -114,8 +114,8 @@
         }
 
         /* ------------------------------------
-   MAIN TITLE
---------------------------------------*/
+            MAIN TITLE
+        --------------------------------------*/
         main.admin h1 {
             text-align: center;
             background: #0C4A85;
@@ -126,8 +126,8 @@
         }
 
         /* ------------------------------------
-   GOVERNMENT WHITE CARD BOXES
---------------------------------------*/
+            GOVERNMENT WHITE CARD BOXES
+        --------------------------------------*/
         .card {
             background: #ffffff;
             border: 1px solid #cfd7df;
@@ -145,8 +145,8 @@
         }
 
         /* ------------------------------------
-   INPUT + TEXTAREA (Gov Style)
---------------------------------------*/
+            INPUT + TEXTAREA (Gov Style)
+        --------------------------------------*/
         input,
         textarea,
         select {
@@ -167,8 +167,8 @@
         }
 
         /* ------------------------------------
-   BUTTON (Govt Blue Button)
---------------------------------------*/
+            BUTTON (Govt Blue Button)
+        --------------------------------------*/
         button {
             background: #0C4A85;
             border: none;
@@ -185,8 +185,8 @@
         }
 
         /* ------------------------------------
-   EXISTING DATA CARDS
---------------------------------------*/
+            EXISTING DATA CARDS
+        --------------------------------------*/
         .cards .card {
             border-left: 5px solid #0C4A85;
             padding: 14px;
@@ -203,8 +203,8 @@
         }
 
         /* ------------------------------------
-   GALLERY GRID
---------------------------------------*/
+            GALLERY GRID
+        --------------------------------------*/
         .gallery-grid img {
             max-width: 160px;
             border-radius: 8px;
@@ -212,8 +212,8 @@
         }
 
         /* ------------------------------------
-   FOOTER
---------------------------------------*/
+            FOOTER
+        --------------------------------------*/
         .site-footer {
             background: #0C4A85;
             color: #fff;
@@ -221,6 +221,204 @@
             text-align: center;
             margin-top: 30px;
             font-size: 15px;
+        }
+
+        /* ================================
+   🔥 Dashboard Card Styling (Premium)
+================================ */
+
+        .section-title {
+            margin-top: 40px;
+            color: #0C4A85;
+            font-size: 24px;
+            font-weight: 700;
+            border-left: 6px solid #0C4A85;
+            padding-left: 10px;
+        }
+
+        .data-card {
+            background: #ffffff;
+            border: 1px solid #d0d8e0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .data-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .data-card h3 {
+            margin: 0;
+            color: #08345c;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .data-card p {
+            color: #333;
+            margin: 4px 0;
+        }
+
+        .data-card button {
+            margin-top: 10px;
+            background: #dc3545;
+            padding: 8px 12px;
+            border-radius: 6px;
+            width: 100%;
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .data-card button:hover {
+            background: #b32233;
+        }
+
+        /* Image grid */
+        .gallery-grid div {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .gallery-grid img {
+            max-width: 150px;
+            border-radius: 10px;
+            border: 3px solid #0C4A85;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-grid button {
+            margin-top: 6px;
+            background: #dc3545;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 5px;
+            color: white;
+        }
+
+        /* ------------------------------------
+   BEAUTIFUL ADMIN CARD SECTIONS
+--------------------------------------*/
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 20px 0 10px;
+            color: #0C4A85;
+            border-left: 6px solid #0C4A85;
+            padding-left: 10px;
+        }
+
+        /* CARD WRAPPER */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        /* INDIVIDUAL CARD */
+        .cards .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            border-left: 5px solid #0C4A85;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: 0.2s ease;
+        }
+
+        .cards .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .cards .card h3 {
+            margin: 0 0 8px;
+            color: #0C4A85;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* DETAILS TEXT */
+        .cards .card p {
+            margin: 4px 0;
+            color: #333;
+            font-size: 15px;
+        }
+
+        /* DOWNLOAD BUTTON (ARJ / Scheme) */
+        .cards .card a {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #0C4A85;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .cards .card a:hover {
+            background: #08345c;
+        }
+
+        /* DELETE BUTTON */
+        .cards .card button {
+            width: 100%;
+            margin-top: 10px;
+            background: #d9534f;
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .cards .card button:hover {
+            background: #b52b27;
+        }
+
+        /* ------------------------------------
+   GALLERY GRID
+--------------------------------------*/
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .gallery-grid div {
+            background: #fff;
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .gallery-grid img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .gallery-grid button {
+            margin-top: 10px;
+            background: #d9534f;
+            color: #fff;
+            padding: 6px 10px;
+            width: 100%;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -532,20 +730,20 @@
             </form>
         </section>
 
-        <!-- Existing Data -->
-        <h2>Existing Notices</h2>
+        <!-- Existing Section -->
+        <h2 class="section-title">Existing Notices</h2>
         <div id="adminInfoList" class="cards"></div>
 
-        <h2>Existing Members</h2>
-        <div id="adminMembers" class="cards">Loading members...</div>
+        <h2 class="section-title">Existing Members</h2>
+        <div id="adminMembers" class="cards"></div>
 
-        <h2>Existing Schemes</h2>
+        <h2 class="section-title">Existing Schemes</h2>
         <div id="adminSchemes" class="cards"></div>
 
-        <h2>Existing Images</h2>
+        <h2 class="section-title">Existing Images</h2>
         <div id="adminGallery" class="gallery-grid"></div>
 
-        <h2>Existing Arj Files</h2>
+        <h2 class="section-title">Existing Arj Files</h2>
         <div id="adminArjList" class="cards"></div>
 
     </main>
@@ -559,6 +757,69 @@
         const socket = io({
             reconnectionDelayMax: 500, // 🔥 reconnect faster
         });
+
+        // ⭐ Insert new member instantly into list
+        function addMemberInstant(member) {
+            const box = document.getElementById("adminMembers");
+            if (!box) return;
+
+            const card = document.createElement("div");
+            card.className = "card";
+            card.id = `member-${member.id}`;
+            card.innerHTML = `
+        <h3>${member.name}</h3>
+        <p><b>Role:</b> ${member.role}</p>
+        <p><b>Contact:</b> ${member.contact}</p>
+        <button onclick="deleteMember(${member.id})">Delete</button>
+    `;
+
+            // Add new member at TOP instantly
+            box.prepend(card);
+        }
+
+
+        // ⭐ Ultra-Fast Realtime Local Update System
+        function mergeRealtime(listId, item, type) {
+            const list = document.getElementById(listId);
+            if (!list) return;
+
+            // ---- 1️⃣ Show placeholder instantly ----
+            if (item.uploading) {
+                list.insertAdjacentHTML(
+                    "afterbegin",
+                    `
+            <div class="card" id="${type}-${item.id}">
+                <h3>${item.title || item.name}</h3>
+                <p style="color:orange;"> Uploaded</p>
+            </div>
+            `
+                );
+                return;
+            }
+
+            // ---- 2️⃣ Replace placeholder with final info ----
+            const card = document.getElementById(`${type}-${item.id}`);
+            if (card) {
+                card.outerHTML = `
+            <div class="card" id="${type}-${item.id}">
+                <h3>${item.title || item.name}</h3>
+
+                ${item.url ? `<a href="${item.url}" download>Download</a>` : ""}
+                ${item.description ? `<p>${item.description}</p>` : ""}
+                ${item.contact ? `<p>${item.contact}</p>` : ""}
+                
+                <button onclick="delete${type.charAt(0).toUpperCase() + type.slice(1)}(${item.id})">
+                    Delete
+                </button>
+            </div>
+        `;
+                return;
+            }
+
+            // ---- 3️⃣ If no placeholder, fallback ----
+            fetchData();
+        }
+
 
         // Load Arj files
         async function fetchArj() {
@@ -580,7 +841,7 @@
                     </div>
                     `).join("")
                     :
-                    "<p>No Arj files uploaded</p>";
+                    "<p></p>";
         }
 
         // Upload new Arj
@@ -594,19 +855,36 @@
             fd.append("title", document.getElementById("arjTitle").value.trim());
             fd.append("file", document.getElementById("arjFile").files[0]);
 
-            await fetch("/admin/arj", {
-                method: "POST",
-                body: fd
-            });
+            await fetch("/admin/arj", { method: "POST", body: fd });
 
             e.target.reset();
-            fetchArj();
         });
+
 
         // socket updates
         socket.on("new-data", (data) => {
-            if (data.type === "arj") fetchArj();
+
+            if (data.type === "arj" && data.arj) {
+                mergeRealtime("adminArjList", data.arj, "arj");
+            }
+
+            if (data.type === "schemes" && data.scheme) {
+                mergeRealtime("adminSchemes", data.scheme, "scheme");
+            }
+
+            if (data.type === "members" && data.member) {
+                mergeRealtime("adminMembers", data.member, "member");
+            }
+
+            if (data.type === "info" && data.info) {
+                mergeRealtime("adminInfoList", data.info, "info");
+            }
+
+            if (data.type === "gallery" && data.image) {
+                mergeRealtime("adminGallery", data.image, "gallery");
+            }
         });
+
 
         async function deleteArj(id) {
             if (!confirm("Are you sure?")) return;
@@ -617,7 +895,6 @@
             await fetch(`/admin/delete/arj/${id}`, {
                 method: "DELETE"
             });
-
 
             fetchArj();  // refresh list
         }
@@ -874,11 +1151,9 @@
             if (document.getElementById('memberPassword').value !== ADMIN_PASSWORD)
                 return alert("Incorrect password");
 
-            await fetch('/admin/members', {
+            const res = await fetch('/admin/members', {
                 method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: document.getElementById('memberName').value.trim(),
                     role: document.getElementById('memberRole').value.trim(),
@@ -887,10 +1162,9 @@
             });
 
             e.target.reset();
-            fetchData();
+            showSuccessPopup(); // show popup only
 
-            // 🔥 SHOW POPUP AFTER SUCCESS
-            showSuccessPopup();
+            // ❗❗ DO NOT CALL fetchData() — socket will update instantly
         });
 
 
@@ -949,43 +1223,46 @@
             showImageAddPopup();   // 🔥 Popup Added Here
         });
 
-        socket.on('new-data', fetchData);
+        socket.on("new-data", (data) => {
+            if (data.type === "members" && data.member) {
+                addMemberInstant(data.member);
+                showSuccessPopup(); // optional popup
+            }
+
+            // Other types still use fetchData for now
+            if (data.type === "info" || data.type === "gallery" || data.type === "schemes") {
+                fetchData();
+            }
+        });
+
 
         /* ------------------------------------------------
-         ⭐ ADDED BY YOUR REQUEST
-      --------------------------------------------------*/
+        ⭐ ADDED BY YOUR REQUEST
+        --------------------------------------------------*/
         async function fetchAdminMembers() {
-            try {
-                const res = await fetch("/api/members");
-                const data = await res.json();
-                const adminBox = document.getElementById("adminMembers");
+            const res = await fetch("/api/members");
+            const data = await res.json();
 
-                if (!adminBox) return;
+            const box = document.getElementById("adminMembers");
+            if (!box) return;
 
-                if (!data.members.length) {
-                    adminBox.innerHTML = "<p>No members found</p>";
-                    return;
-                }
-
-                adminBox.innerHTML = data.members.map(m => `
-                    <div class="card">
-                        <h3>${m.name}</h3>
-                        <p><b>Role:</b> ${m.role}</p>
-                        <p><b>Contact:</b> ${m.contact}</p>
-                        <button onclick="deleteMember(${m.id})">Delete</button>
-                    </div>
-                `).join("");
-
-            } catch (err) {
-                console.error("Admin member load error:", err);
+            if (!data.members.length) {
+                box.innerHTML = "<p></p>";
+                return;
             }
+
+            box.innerHTML = data.members.map(m => `
+        <div class="card" id="member-${m.id}">
+            <h3>${m.name}</h3>
+            <p><b>Role:</b> ${m.role}</p>
+            <p><b>Contact:</b> ${m.contact}</p>
+            <button onclick="deleteMember(${m.id})">Delete</button>
+        </div>
+    `).join("");
         }
 
-        /* ------------------------------------------------
-           ⭐ FIX: Load Members Correctly on Dashboard
-        --------------------------------------------------*/
+        // Load members when dashboard opens
         document.addEventListener("DOMContentLoaded", () => {
-            fetchData();
             fetchAdminMembers();
         });
 
