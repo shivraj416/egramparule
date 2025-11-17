@@ -625,8 +625,29 @@ io.on("connection", socket => {
 
 
 // ----------------------------------------------------------
-// START SERVER
+// START SERVER + KEEP-ALIVE
 // ----------------------------------------------------------
+
+const https = require("https");  // ⭐ REQUIRED for keep-alive ping
+
+// 🔥 KEEP-ALIVE PING (Prevents Render from sleeping)
+if (process.env.KEEP_ALIVE_URL) {
+    const url = process.env.KEEP_ALIVE_URL;
+
+    setInterval(() => {
+        try {
+            https.get(url, (res) => {
+                res.on("data", () => {}); // ignore data
+            }).on("error", (err) => {
+                console.log("Keep-alive error:", err.message);
+            });
+        } catch (e) {
+            console.log("Keep-alive failed:", e.message);
+        }
+    }, 1000 * 60 * 4); // ping every 4 minutes
+}
+
+// START EXPRESS SERVER
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
