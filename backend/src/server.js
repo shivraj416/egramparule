@@ -158,31 +158,54 @@ app.get("/api/members", (req, res) => {
 
 app.post("/admin/members", (req, res) => {
     const { name, role, contact } = req.body;
+
     if (!name || !role || !contact) {
         return res.status(400).json({ status: "error", message: "Missing fields" });
     }
 
     const data = loadData();
-    const newMember = { id: Date.now(), name, role, contact };
+
+    // 1️⃣ Create member object
+    const newMember = {
+        id: Date.now(),
+        name,
+        role,
+        contact,
+        uploading: false  // for consistency with ARJ & Schemes
+    };
+
+    // 2️⃣ Push instantly to data + RT
     data.members.push(newMember);
-    RT.members = data.members;   // RT UPDATE
+    RT.members = data.members;
     saveData(data);
 
+    // 3️⃣ Emit instantly (UI updates immediately)
     io.emit("new-data", { type: "members", member: newMember });
     io.of("/").adapter.close();
-    res.json({ status: "success", member: newMember });
+
+    // 4️⃣ Send API response instantly
+    return res.json({ status: "success", member: newMember });
 });
+
 
 app.delete("/admin/delete/member/:id", (req, res) => {
     const data = loadData();
+
+    // remove member
     data.members = data.members.filter(m => m.id != req.params.id);
-    RT.members = data.members;   // RT UPDATE
+
+    // update RT memory
+    RT.members = data.members;
+
     saveData(data);
 
+    // notify frontend instantly
     io.emit("new-data", { type: "members" });
     io.of("/").adapter.close();
+
     res.json({ status: "success" });
 });
+
 
 // ----------------------------------------------------------
 // GALLERY ROUTES
@@ -346,6 +369,28 @@ app.post("/admin/arj", uploadArj.single("file"), async (req, res) => {
     }
 
     try {
+        const data = loadData();
+
+        // 1️⃣ Create temporary placeholder
+        const tempArj = {
+            id: Date.now(),
+            title,
+            filename: "uploading...",
+            url: null,
+            uploading: true
+        };
+
+        // 2️⃣ Push instantly
+        if (!data.arj) data.arj = [];
+        data.arj.push(tempArj);
+        RT.arj = data.arj;
+        saveData(data);
+
+        // 3️⃣ Emit instantly (UI updates in fraction of second)
+        io.emit("new-data", { type: "arj", arj: tempArj });
+        io.of("/").adapter.close();
+
+        // 4️⃣ Upload to Cloudinary in background
         const uploadResult = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream(
                 {
@@ -359,22 +404,19 @@ app.post("/admin/arj", uploadArj.single("file"), async (req, res) => {
             ).end(req.file.buffer);
         });
 
-        const data = loadData();
-        const newArj = {
-            id: Date.now(),
-            title,
-            filename: uploadResult.public_id,
-            url: uploadResult.secure_url
-        };
+        // 5️⃣ Replace placeholder with actual file
+        tempArj.filename = uploadResult.public_id;
+        tempArj.url = uploadResult.secure_url;
+        tempArj.uploading = false;
 
-        if (!data.arj) data.arj = [];
-        data.arj.push(newArj);
-        RT.arj = data.arj;   // RT UPDATE
         saveData(data);
+        RT.arj = data.arj;
 
+        // 6️⃣ Emit final update
         io.emit("new-data", { type: "arj" });
         io.of("/").adapter.close();
-        return res.json({ success: true, file: newArj });
+
+        return res.json({ success: true, file: tempArj });
 
     } catch (err) {
         console.error("ARJ UPLOAD ERROR:", err);
@@ -382,31 +424,46 @@ app.post("/admin/arj", uploadArj.single("file"), async (req, res) => {
     }
 });
 
+
 // Delete ARJ
 app.delete("/admin/delete/arj/:id", async (req, res) => {
     const id = req.params.id;
     const data = loadData();
 
     const item = data.arj.find(a => a.id == id);
-    if (!item)
+    if (!item) {
         return res.status(404).json({ success: false, message: "ARJ not found" });
+    }
 
     try {
-        await cloudinary.uploader.destroy(item.filename, { resource_type: "raw" });
+        // 🔥 Delete from Cloudinary (if exists)
+        if (item.filename && typeof item.filename === "string") {
+            try {
+                await cloudinary.uploader.destroy(item.filename, { resource_type: "raw" });
+            } catch (err) {
+                console.error("Cloudinary ARJ delete error:", err);
+            }
+        }
 
-        data.arj = data.arj.filter(a => a.id != id)
-        RT.arj = data.arj;   // RT UPDATE
+        // 🔥 Delete from JSON storage
+        data.arj = data.arj.filter(a => a.id != id);
+
+        // 🔥 Update RT instantly
+        RT.arj = data.arj;
         saveData(data);
 
+        // 🔥 UI real-time update
         io.emit("new-data", { type: "arj" });
         io.of("/").adapter.close();
+
         res.json({ success: true });
 
     } catch (err) {
         console.error("ARJ DELETE ERROR:", err);
-        res.status(500).json({ success: false, message: "Cloudinary delete failed" });
+        res.status(500).json({ success: false, message: "Server error" });
     }
 });
+
 
 
 // =======================================================
@@ -425,13 +482,35 @@ app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
     try {
         const { title, description } = req.body;
 
-        if (!title || !description)
+        if (!title || !description) {
             return res.status(400).json({ success: false, message: "Missing fields" });
+        }
 
-        let fileUrl = null;
-        let cloudinaryId = null;
-        let fileType = null;
+        const data = loadData();
 
+        // 1️⃣ Create temporary placeholder
+        const tempScheme = {
+            id: Date.now(),
+            title,
+            description,
+            fileUrl: null,
+            fileType: "uploading",
+            cloudinaryId: null,
+            uploading: true
+        };
+
+        // 2️⃣ Push instantly to data + RT
+        if (!data.schemes) data.schemes = [];
+        data.schemes.push(tempScheme);
+
+        RT.schemes = data.schemes;
+        saveData(data);
+
+        // 3️⃣ Emit instant update (UI refreshes in fraction of second)
+        io.emit("new-data", { type: "schemes", scheme: tempScheme });
+        io.of("/").adapter.close();
+
+        // 4️⃣ If file exists → upload to Cloudinary in background
         if (req.file) {
             const uploadResult = await new Promise((resolve, reject) => {
                 cloudinary.uploader.upload_stream(
@@ -446,37 +525,33 @@ app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
                 ).end(req.file.buffer);
             });
 
-            fileUrl = uploadResult.secure_url;
-            cloudinaryId = uploadResult.public_id;
+            // 5️⃣ Update placeholder with real Cloudinary file info
+            tempScheme.fileUrl = uploadResult.secure_url;
+            tempScheme.cloudinaryId = uploadResult.public_id;
 
+            // detect file type
             const mime = req.file.mimetype;
-            if (mime === "application/pdf") fileType = "pdf";
+            if (mime === "application/pdf") tempScheme.fileType = "pdf";
             else if (
                 mime === "application/msword" ||
                 mime === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
-                fileType = "doc";
-            else if (mime.startsWith("image/")) fileType = "image";
-            else fileType = "other";
+                tempScheme.fileType = "doc";
+            else if (mime.startsWith("image/")) tempScheme.fileType = "image";
+            else tempScheme.fileType = "other";
+
+            tempScheme.uploading = false;
+
+            // 6️⃣ Save & update RT again
+            saveData(data);
+            RT.schemes = data.schemes;
+
+            // 7️⃣ Emit final update (real document replaces temp)
+            io.emit("new-data", { type: "schemes" });
+            io.of("/").adapter.close();
         }
 
-        const data = loadData();
-        const newScheme = {
-            id: Date.now(),
-            title,
-            description,
-            fileUrl,
-            fileType,
-            cloudinaryId
-        };
-
-        data.schemes.push(newScheme);
-        RT.schemes = data.schemes;   // RT UPDATE
-        saveData(data);
-
-        io.emit("new-data", { type: "schemes" });
-        io.of("/").adapter.close();
-        return res.json({ success: true, scheme: newScheme });
+        return res.json({ success: true, scheme: tempScheme });
 
     } catch (err) {
         console.error("SCHEME ERROR:", err);
@@ -498,37 +573,33 @@ app.delete("/admin/delete/scheme/:id", async (req, res) => {
     }
 
     try {
-        // ------------------------------
-        // 🔥 SAFE CLOUDINARY DELETE
-        // ------------------------------
+        // 🔥 Delete from Cloudinary safely
         if (item.cloudinaryId && typeof item.cloudinaryId === "string" && item.cloudinaryId.trim() !== "") {
 
-            // Determine correct Cloudinary resource type
-            let rType = "raw";  // default for pdf, doc, docx
+            let rType = "raw"; // default for pdf/doc
 
-            if (item.fileType === "image") rType = "image";
-
-            try {
-                await cloudinary.uploader.destroy(item.cloudinaryId, {
-                    resource_type: rType
-                });
-            } catch (cloudErr) {
-                console.error("Cloudinary delete error:", cloudErr);
+            if (item.fileType === "image") {
+                rType = "image";
             }
 
-        } else {
-            console.log("No cloudinaryId — skipping Cloudinary delete.");
+            try {
+                await cloudinary.uploader.destroy(item.cloudinaryId, { resource_type: rType });
+            } catch (err) {
+                console.error("Cloudinary scheme delete error:", err);
+            }
         }
 
-        // ------------------------------
-        // 🔥 REMOVE FROM JSON
-        // ------------------------------
-        data.schemes = data.schemes.filter(s => s.id != req.params.id);
-        RT.schemes = data.schemes;   // RT UPDATE
+        // 🔥 Remove from JSON
+        data.schemes = data.schemes.filter(s => s.id != id);
+
+        // 🔥 Update RT memory instantly
+        RT.schemes = data.schemes;
         saveData(data);
 
+        // 🔥 Instant UI update
         io.emit("new-data", { type: "schemes" });
         io.of("/").adapter.close();
+
         return res.json({ success: true });
 
     } catch (err) {
