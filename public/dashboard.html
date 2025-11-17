@@ -556,7 +556,9 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();   /* ✅ FIXED — socket must be initialized first */
+        const socket = io({
+            reconnectionDelayMax: 500, // 🔥 reconnect faster
+        });
 
         // Load Arj files
         async function fetchArj() {

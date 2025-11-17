@@ -307,7 +307,9 @@
     <!-- REAL-TIME DATA HANDLING -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        const socket = io({
+            reconnectionDelayMax: 500, // 🔥 reconnect faster
+        });
         const infoContainer = document.getElementById("infoItems");
         const searchInput = document.getElementById("noticeSearch");
         const dotHome = document.getElementById("dotHome");

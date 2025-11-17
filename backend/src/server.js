@@ -37,6 +37,16 @@ let CACHE_TIME = 0;
 const CACHE_TTL = 4000; // 4 seconds cache
 const DATA_FILE = path.join(ROOT_DIR, "data.json");
 
+// 🔥 REAL-TIME IN-MEMORY CACHE (SUPER FAST)
+let RT = {
+    info: [],
+    members: [],
+    images: [],
+    schemes: [],
+    contact: [],
+    arj: []
+};
+
 
 
 // ----------------------------------------------------------
@@ -99,7 +109,7 @@ function saveData(data) {
 // INFO ROUTES
 // ----------------------------------------------------------
 app.get("/api/info", (req, res) => {
-    res.json({ info: loadData().info });
+    res.json({ info: RT.info });
 });
 
 app.post("/admin/upload", (req, res) => {
@@ -119,18 +129,22 @@ app.post("/admin/upload", (req, res) => {
     };
 
     data.info.push(newInfo);
+    RT.info = data.info;   // RT UPDATE
     saveData(data);
 
     io.emit("new-data", { type: "info", info: newInfo });
+    io.of("/").adapter.close();
     res.json({ status: "success", info: newInfo });
 });
 
 app.delete("/admin/delete/info/:id", (req, res) => {
     const data = loadData();
-    data.info = data.info.filter((i) => i.id != req.params.id);
+    data.info = data.info.filter(i => i.id != req.params.id);
+    RT.info = data.info;   // RT UPDATE
     saveData(data);
 
     io.emit("new-data", { type: "info" });
+    io.of("/").adapter.close();
     res.json({ status: "success" });
 });
 
@@ -138,8 +152,9 @@ app.delete("/admin/delete/info/:id", (req, res) => {
 // MEMBERS ROUTES
 // ----------------------------------------------------------
 app.get("/api/members", (req, res) => {
-    res.json({ members: loadData().members });
+    res.json({ members: RT.members });
 });
+
 
 app.post("/admin/members", (req, res) => {
     const { name, role, contact } = req.body;
@@ -150,18 +165,22 @@ app.post("/admin/members", (req, res) => {
     const data = loadData();
     const newMember = { id: Date.now(), name, role, contact };
     data.members.push(newMember);
+    RT.members = data.members;   // RT UPDATE
     saveData(data);
 
     io.emit("new-data", { type: "members", member: newMember });
+    io.of("/").adapter.close();
     res.json({ status: "success", member: newMember });
 });
 
 app.delete("/admin/delete/member/:id", (req, res) => {
     const data = loadData();
-    data.members = data.members.filter((m) => m.id != req.params.id);
+    data.members = data.members.filter(m => m.id != req.params.id);
+    RT.members = data.members;   // RT UPDATE
     saveData(data);
 
     io.emit("new-data", { type: "members" });
+    io.of("/").adapter.close();
     res.json({ status: "success" });
 });
 
@@ -171,7 +190,7 @@ app.delete("/admin/delete/member/:id", (req, res) => {
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.get("/api/gallery", (req, res) => {
-    res.json({ images: loadData().images });
+    res.json({ images: RT.images });
 });
 
 app.post("/admin/gallery", upload.single("image"), (req, res) => {
@@ -191,18 +210,22 @@ app.post("/admin/gallery", upload.single("image"), (req, res) => {
     };
 
     data.images.push(newImg);
+    RT.images = data.images;   // RT UPDATE
     saveData(data);
 
     io.emit("new-data", { type: "gallery", image: newImg });
+    io.of("/").adapter.close();
     res.json({ status: "success", image: newImg });
 });
 
 app.delete("/admin/delete/image/:id", (req, res) => {
     const data = loadData();
-    data.images = data.images.filter((img) => img.id != req.params.id);
+    data.images = data.images.filter(img => img.id != req.params.id);
+    RT.images = data.images;   // RT UPDATE
     saveData(data);
 
     io.emit("new-data", { type: "gallery" });
+    io.of("/").adapter.close();
     res.json({ status: "success" });
 });
 
@@ -231,7 +254,7 @@ app.post("/api/send-message", (req, res) => {
     saveData(data);
 
     io.emit("new-data", { type: "contact", message: newMsg });
-
+    io.of("/").adapter.close();
     res.json({ success: true });
 });
 
@@ -311,7 +334,7 @@ const uploadArj = multer({ storage: multer.memoryStorage() });
 
 // GET all ARJs
 app.get("/api/arj", (req, res) => {
-    res.json({ arj: loadData().arj || [] });
+    res.json({ arj: RT.arj });
 });
 
 // Upload ARJ
@@ -346,10 +369,11 @@ app.post("/admin/arj", uploadArj.single("file"), async (req, res) => {
 
         if (!data.arj) data.arj = [];
         data.arj.push(newArj);
+        RT.arj = data.arj;   // RT UPDATE
         saveData(data);
 
         io.emit("new-data", { type: "arj" });
-
+        io.of("/").adapter.close();
         return res.json({ success: true, file: newArj });
 
     } catch (err) {
@@ -370,11 +394,12 @@ app.delete("/admin/delete/arj/:id", async (req, res) => {
     try {
         await cloudinary.uploader.destroy(item.filename, { resource_type: "raw" });
 
-        data.arj = data.arj.filter(a => a.id != id);
+        data.arj = data.arj.filter(a => a.id != id)
+        RT.arj = data.arj;   // RT UPDATE
         saveData(data);
 
         io.emit("new-data", { type: "arj" });
-
+        io.of("/").adapter.close();
         res.json({ success: true });
 
     } catch (err) {
@@ -391,9 +416,9 @@ const uploadScheme = multer({ storage: multer.memoryStorage() });
 
 // GET all schemes
 app.get("/api/schemes", (req, res) => {
-    const data = loadData();
-    res.json({ schemes: data.schemes || [] });
+    res.json({ schemes: RT.schemes });
 });
+
 
 // Upload scheme
 app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
@@ -445,12 +470,12 @@ app.post("/admin/schemes", uploadScheme.single("file"), async (req, res) => {
             cloudinaryId
         };
 
-        if (!data.schemes) data.schemes = [];
         data.schemes.push(newScheme);
+        RT.schemes = data.schemes;   // RT UPDATE
         saveData(data);
 
         io.emit("new-data", { type: "schemes" });
-
+        io.of("/").adapter.close();
         return res.json({ success: true, scheme: newScheme });
 
     } catch (err) {
@@ -498,11 +523,12 @@ app.delete("/admin/delete/scheme/:id", async (req, res) => {
         // ------------------------------
         // 🔥 REMOVE FROM JSON
         // ------------------------------
-        data.schemes = data.schemes.filter(s => s.id != id);
+        data.schemes = data.schemes.filter(s => s.id != req.params.id);
+        RT.schemes = data.schemes;   // RT UPDATE
         saveData(data);
 
         io.emit("new-data", { type: "schemes" });
-
+        io.of("/").adapter.close();
         return res.json({ success: true });
 
     } catch (err) {
@@ -515,10 +541,17 @@ app.delete("/admin/delete/scheme/:id", async (req, res) => {
 // ----------------------------------------------------------
 // SOCKET.IO EVENTS
 // ----------------------------------------------------------
-io.on("connection", (socket) => {
+io.on("connection", socket => {
     console.log("User connected:", socket.id);
-    socket.on("disconnect", () => console.log("User disconnected:", socket.id));
+
+    // 🔥 real-time speed boost (fixes delay)
+    socket.conn.transport.maxHttpBufferSize = 1e8;
+
+    socket.on("disconnect", () =>
+        console.log("User disconnected:", socket.id)
+    );
 });
+
 
 // ----------------------------------------------------------
 // START SERVER

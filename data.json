@@ -1,6 +1,13 @@
 {
   "info": [],
-  "members": [],
+  "members": [
+    {
+      "id": 1763403284825,
+      "name": "Niranjan",
+      "role": "sarpanch",
+      "contact": "9960302833"
+    }
+  ],
   "schemes": [],
   "images": [],
   "contact": [
@@ -11,5 +18,12 @@
       "message": "fghgnh"
     }
   ],
-  "arj": []
+  "arj": [
+    {
+      "id": 1763404045137,
+      "title": "जन्म दाखला मिळणे बाबत ..... त्वरीत / साधारण",
+      "filename": "arj_files/r0kbnk5ndz9kstflf9pe",
+      "url": "https://res.cloudinary.com/dblggj2rh/raw/upload/v1763404044/arj_files/r0kbnk5ndz9kstflf9pe"
+    }
+  ]
 }

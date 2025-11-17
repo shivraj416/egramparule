@@ -234,7 +234,9 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-        const socket = io();
+        const socket = io({
+            reconnectionDelayMax: 500, // 🔥 reconnect faster
+        });
         const memberListEl = document.getElementById("memberList");
         const searchInput = document.getElementById("memberSearch");
         const dotMembers = document.getElementById("dotMembers");

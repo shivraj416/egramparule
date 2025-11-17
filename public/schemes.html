@@ -308,7 +308,9 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-        const socket = io();
+        const socket = io({
+            reconnectionDelayMax: 500, // 🔥 reconnect faster
+        });
         const schemeTable = document.getElementById("schemeTable");
         const schemeSearch = document.getElementById("schemeSearch");
         const dotSchemes = document.getElementById("dotSchemes");

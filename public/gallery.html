@@ -270,7 +270,10 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-        const socket = io();
+        const socket = io({
+            reconnectionDelayMax: 500, // 🔥 reconnect faster
+        });
+
         const galleryEl = document.getElementById("gallery");
         const dotGallery = document.getElementById("dotGallery");
 
